@@ -1,7 +1,7 @@
 #include "verlet.h"
 
 /* velocity verlet */
-static void velverlet_1(mdsys_t *sys)
+void velverlet_1(mdsys_t *sys)
 {
     int i;
 
@@ -20,7 +20,7 @@ static void velverlet_1(mdsys_t *sys)
 }
 
 /* velocity verlet */
-static void velverlet_2(mdsys_t *sys)
+void velverlet_2(mdsys_t *sys)
 {
     int i;
 
