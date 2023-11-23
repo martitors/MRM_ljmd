@@ -1,5 +1,4 @@
 /* compute forces */
-#include "utilities.h"
 #include "force_compute.h"
 
 static void force(mdsys_t *sys)
