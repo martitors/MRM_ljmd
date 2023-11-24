@@ -1,12 +1,12 @@
 
 #include "gtest/gtest.h"
-#include "ljmd.h"
+#include "../include/utilities.h"
 
 
 TEST(TestWallClock, one)
 {
     double t_test=-wallclock();
-    doublesleep(0.1);
+    double sleep(0.1);
     t_test += wallclock();
     ASSERT_TRUE((t_test>=0.1));
     ASSERT_TRUE((t_test<1.1));
