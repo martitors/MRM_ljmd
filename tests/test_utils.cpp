@@ -3,13 +3,16 @@
 #include "../include/utilities.h"
 
 
-TEST(TestWallClock, one)
-{
-    double t_test=-wallclock();
-    double sleep(0.1);
+TEST(TestWallClock, one) {
+    double t_test = -wallclock();
+    sleep(1); // Change to a longer sleep duration
     t_test += wallclock();
-    ASSERT_TRUE((t_test>=0.1));
-    ASSERT_TRUE((t_test<1.1));
+
+    const double expected_min_time = 0.9; // Adjust these thresholds accordingly
+    const double expected_max_time = 1.1;
+
+    ASSERT_GE(t_test, expected_min_time);
+    ASSERT_LE(t_test, expected_max_time);
 }
 
 TEST(TestAzzero, doubles)
