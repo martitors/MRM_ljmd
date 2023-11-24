@@ -42,10 +42,11 @@ int main(int argc, char **argv)
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
      /* read restart */
-    char parentPath[256]; // Adjust the size based on your needs
-    snprintf(parentPath, sizeof(parentPath), "../examples/%s", restfile);
-    
-    fp=fopen(parentPath,"r"); 
+    char restPath[256]; // Adjust the size based on your needs
+    snprintf(restPath, sizeof(restPath), "../examples/%s", restfile);
+   
+
+    fp=fopen(restPath,"r"); 
     if(fp) {
         for (i=0; i<sys.natoms; ++i) {
             fscanf(fp,"%lf%lf%lf",sys.rx+i, sys.ry+i, sys.rz+i);
@@ -67,8 +68,14 @@ int main(int argc, char **argv)
     force(&sys);
     ekin(&sys);
 
-    erg=fopen(ergfile,"w");
-    traj=fopen(trajfile,"w");
+    char ergPath[256]; // Adjust the size based on your needs
+    snprintf(ergPath, sizeof(ergPath), "../examples/%s", ergfile);
+
+    char trajPath[256]; // Adjust the size based on your needs
+    snprintf(trajPath, sizeof(trajPath), "../examples/%s", trajfile);
+
+    erg=fopen(ergPath,"w");
+    traj=fopen(trajPath,"w");
 
     printf("Startup time: %10.3fs\n", wallclock()-t_start);
     printf("Starting simulation with %d atoms for %d steps.\n",sys.natoms, sys.nsteps);
