@@ -1,10 +1,16 @@
 #ifndef CONSTANT_H
-#define CONSTANTS_H
+#ifdef __cpluscplus
 
-    /* a few physical constants */
+extern "C" {
+	#endif
+	#define CONSTANT_H
 
-    #define BLEN 200
-    extern const double kboltz;  /* boltzman constant in kcal/mol/K */
-    extern const double mvsq2e; /* m*v^2 in kcal/mol */
+    	/* a few physical constants */
 
+    		#define BLEN 200
+    		extern const double kboltz;  /* boltzman constant in kcal/mol/K */
+    		extern const double mvsq2e; /* m*v^2 in kcal/mol */
+	#ifdef __cpluscplus
+	}
+	#endif
 #endif
