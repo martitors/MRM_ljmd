@@ -1,4 +1,4 @@
-#include "output.h"
+#include "../include/output.h"
 
 void output(mdsys_t *sys, FILE *erg, FILE *traj)
 {

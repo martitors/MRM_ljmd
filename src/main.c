@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
+#include "../include/types.h"
 
 /* generic file- or pathname buffer length */
 #define LJMD_VERSION 1.0

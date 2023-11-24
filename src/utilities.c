@@ -1,5 +1,5 @@
 
-#include "utilities.h"
+#include "../include/utilities.h"
 /* helper function: get current time in seconds since epoch */
 double wallclock()
 {

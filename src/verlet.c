@@ -1,4 +1,4 @@
-#include "verlet.h"
+#include "../include/verlet.h"
 
 /* velocity verlet */
 void velverlet_1(mdsys_t *sys)

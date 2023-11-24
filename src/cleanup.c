@@ -1,6 +1,6 @@
-#include "cleanup.h"
+#include "../include/cleanup.h"
 
-void cleanup(mdsys_t *sys, FILE *erg, FILE *traj) {
+void cleanup(mdsys_t sys, FILE *erg, FILE *traj) {
 
 	fclose(erg);
     	fclose(traj);
