@@ -1,6 +1,6 @@
 // unit test example with test fixture
 #include "gtest/gtest.h"
-#include "ljmd.h"
+#include "verlet.h"
 
 class VerletTest: public ::testing::Test {
 
@@ -39,7 +39,7 @@ TEST_F(VerletTest, step1)
     ASSERT_NE(sys,nullptr);
     ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
     ASSERT_DOUBLE_EQ(sys->vx[0],0.0);
-    verlet_1(sys);
+    velverlet_1(sys);
     ASSERT_DOUBLE_EQ(sys->rx[0],-0.5);
     ASSERT_DOUBLE_EQ(sys->vx[0], 0.5);
 }
@@ -49,7 +49,7 @@ TEST_F(VerletTest, step2)
     ASSERT_NE(sys,nullptr);
     ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
     ASSERT_DOUBLE_EQ(sys->vx[0],0.0);
-    verlet_2(sys);
+    velverlet_2(sys);
     ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
     ASSERT_DOUBLE_EQ(sys->vx[0], 0.5);
 }
