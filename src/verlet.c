@@ -13,10 +13,7 @@ void velverlet_1(mdsys_t *sys)
         sys->rx[i] += sys->dt*sys->vx[i];
         sys->ry[i] += sys->dt*sys->vy[i];
         sys->rz[i] += sys->dt*sys->vz[i];
-    }
-
-    /* compute forces and potential energy */
-    force(sys);
+    } 
 }
 
 /* velocity verlet */
