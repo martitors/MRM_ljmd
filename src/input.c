@@ -1,5 +1,6 @@
 #include "../include/input.h"
 
+
 void read(char *line, char *restfile, char *trajfile, char *ergfile, mdsys_t *sys, int *nprint)
 {
     if (get_a_line(stdin, line))

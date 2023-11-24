@@ -4,7 +4,14 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
-#include "../include/types.h"
+#include "types.h"
+#include "constants.h"
+#include "utilities.h"
+#include "verlet.h"
+#include "output.h"
+#include "input.h"
+#include "force_compute.h"
+#include "cleanup.h"
 
 /* generic file- or pathname buffer length */
 #define LJMD_VERSION 1.0
@@ -35,7 +42,10 @@ int main(int argc, char **argv)
     sys.fz=(double *)malloc(sys.natoms*sizeof(double));
 
      /* read restart */
-    fp=fopen(restfile,"r");
+    char parentPath[256]; // Adjust the size based on your needs
+    snprintf(parentPath, sizeof(parentPath), "../examples/%s", restfile);
+    
+    fp=fopen(parentPath,"r"); 
     if(fp) {
         for (i=0; i<sys.natoms; ++i) {
             fscanf(fp,"%lf%lf%lf",sys.rx+i, sys.ry+i, sys.rz+i);
@@ -77,7 +87,8 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        velverlet(&sys);
+        velverlet_1(&sys);
+        velverlet_2(&sys);
         ekin(&sys);
     }
     /**************************************************/
@@ -85,7 +96,7 @@ int main(int argc, char **argv)
     /* clean up: close files, free memory */
     printf("Simulation Done. Run time: %10.3fs\n", wallclock()-t_start);
 
-    cleanup(&sys, erg, traj);
+    cleanup(sys, erg, traj);
 
     return 0;
 }

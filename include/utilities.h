@@ -4,6 +4,9 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "constants.h"
 
     double wallclock();
     void azzero(double *d, const int n);
