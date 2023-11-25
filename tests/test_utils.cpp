@@ -17,7 +17,7 @@ TEST(TestWallClock, one) {
 
 TEST(TestAzzero, doubles)
 {
-    double *buf = new double[10];
+    double *buf = (double*)malloc(10*sizeof(double));
     for (int i=0; i<10; ++i) buf[i]=i+1;
     ASSERT_DOUBLE_EQ(buf[1],2.0);
     ASSERT_DOUBLE_EQ(buf[5],6.0);
@@ -27,4 +27,5 @@ TEST(TestAzzero, doubles)
     ASSERT_DOUBLE_EQ(buf[1],0.0);
     ASSERT_DOUBLE_EQ(buf[5],0.0);
     ASSERT_DOUBLE_EQ(buf[9],0.0);
+    free(buf);
 }
