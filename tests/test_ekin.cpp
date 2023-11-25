@@ -1,13 +1,14 @@
 #include <gtest/gtest.h>
 #include "../include/force_compute.h"
 
+
 TEST(Kinetic_Energy, KE_2atoms) {
         mdsys_t sys;
         sys.natoms = 2;
         sys.mass = 39.948; //argon
-        sys.vx = new double[2];
-        sys.vy = new double[2];
-        sys.vz = new double[2];
+        sys.vx=(double *)malloc(sys.natoms*sizeof(double));
+        sys.vy=(double *)malloc(sys.natoms*sizeof(double));
+        sys.vz=(double *)malloc(sys.natoms*sizeof(double));
         sys.vx[0] = 1.5;
         sys.vy[0] = 2.5;
         sys.vz[0] = 3.5;
@@ -25,9 +26,9 @@ TEST(kinetic_Energy, KE_3atoms) {
 	mdsys_t sys;
 	sys.natoms = 3;
 	sys.mass = 10.0;
-	sys.vx = new double[3];
-	sys.vy = new double[3];
-	sys.vz = new double[3];	
+	sys.vx=(double *)malloc(sys.natoms*sizeof(double));
+        sys.vy=(double *)malloc(sys.natoms*sizeof(double));
+        sys.vz=(double *)malloc(sys.natoms*sizeof(double));
         sys.vx[0] = 1.5;
         sys.vy[0] = 2.5;
         sys.vz[0] = 3.5;	
