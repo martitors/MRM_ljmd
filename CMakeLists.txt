@@ -28,5 +28,10 @@ if(ENABLE_TESTING)
   target_include_directories(test_utils PRIVATE ${CMAKE_SOURCE_DIR}/src)
   target_link_libraries(test_utils PRIVATE GTest::GTestMain GTest::GTest mdlib)
   add_test(NAME Utils COMMAND test_utils)
+  
+  add_executable(test_ekin tests/test_ekin.cpp)
+  target_include_directories(test_ekin PRIVATE ${CMAKE_SOURCE_DIR}/src)
+  target_link_libraries(test_ekin PRIVATE GTest::GTestMain GTest::GTest mdlib)
+  add_test(NAME Ekin COMMAND test_ekin)
 endif()
 
