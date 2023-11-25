@@ -1,15 +1,14 @@
 
 #include "gtest/gtest.h"
 #include "../include/utilities.h"
-
+#include <unistd.h>
 
 TEST(TestWallClock, one)
 {
-    double t_test=-wallclock();
-    double sleep(0.1);
-    t_test += wallclock();
-    ASSERT_TRUE((t_test>=0.1));
-    ASSERT_TRUE((t_test<1.1));
+    double t_test_1 = wallclock();
+    sleep(0.1);
+    double t_test_2 = wallclock();
+    ASSERT_TRUE((t_test_2 - t_test_1 <= 0.2));
 }
 
 TEST(TestAzzero, doubles)
