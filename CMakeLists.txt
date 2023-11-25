@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
-add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c)
+add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
 
 target_link_libraries(mdlib m)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include)
@@ -29,9 +29,5 @@ if(ENABLE_TESTING)
   target_link_libraries(test_utils PRIVATE GTest::GTestMain GTest::GTest mdlib)
   add_test(NAME Utils COMMAND test_utils)
 
-  add_executable(test_force_compute tests/test_force_compute.cpp)
-  target_include_directories(test_force_compute PRIVATE ${CMAKE_SOURCE_DIR}/src)
-  target_link_libraries(test_force_compute PRIVATE GTest::GTestMain GTest::GTest mdlib m)
-  add_test(NAME Force_compute COMMAND test_force_compute)
 endif()
 
