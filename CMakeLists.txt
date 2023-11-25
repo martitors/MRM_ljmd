@@ -29,5 +29,10 @@ if(ENABLE_TESTING)
   target_link_libraries(test_utils PRIVATE GTest::GTestMain GTest::GTest mdlib)
   add_test(NAME Utils COMMAND test_utils)
 
+  add_executable(test_force tests/test_force.cpp)
+  target_include_directories(test_force PRIVATE ${CMAKE_SOURCE_DIR}/src)
+  target_link_libraries(test_force PRIVATE GTest::GTestMain GTest::GTest mdlib)
+  add_test(NAME Force COMMAND test_force)
+
 endif()
 
