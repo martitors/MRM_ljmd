@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "verlet.h"
 #include "types.h"
+#include "allocate.h"
 #include <random>
 
 
@@ -24,25 +25,9 @@ TEST(ForceCalculation, ComputesForcesInsideCutoffDirectly) {
     sys2.box = 8.0;
 
     // Allocate memory
-    sys1.rx = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.ry = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.rz = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.vx = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.vy = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.vz = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.fx = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.fy = (double *)malloc(sys1.natoms * sizeof(double));
-    sys1.fz = (double *)malloc(sys1.natoms * sizeof(double));
+    allocate(&sys1);
+    allocate(&sys2);
 
-    sys2.rx = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.ry = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.rz = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.vx = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.vy = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.vz = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.fx = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.fy = (double *)malloc(sys2.natoms * sizeof(double));
-    sys2.fz = (double *)malloc(sys2.natoms * sizeof(double));
 
     // Initialize positions, velocities, and forces
     sys1.rx[0] = 0.5; sys1.ry[0] = 1.0; sys1.rz[0] = 2.0;
