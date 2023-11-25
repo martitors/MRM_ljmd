@@ -12,7 +12,7 @@ add_executable(main src/main.cpp)
 target_link_libraries(main PUBLIC mdlib m)
 
 
-option(ENABLE_TESTING "Enable building unit tests" ON)
+option(ENABLE_TESTING "Enable building unit tests" OFF)
 if(ENABLE_TESTING)
   enable_testing()
   enable_language(CXX)
