@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
     t_start = wallclock();
 
-    read(line, restfile, trajfile, ergfile, &sys, &nprint);
+    read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
 
     allocate(&sys);
 
