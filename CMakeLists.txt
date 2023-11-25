@@ -12,7 +12,7 @@ add_executable(main src/main.cpp)
 target_link_libraries(main PUBLIC mdlib m)
 
 
-option(ENABLE_TESTING "Enable building unit tests" OFF)
+option(ENABLE_TESTING "Enable building unit tests" ON)
 if(ENABLE_TESTING)
   enable_testing()
   enable_language(CXX)
@@ -39,5 +39,9 @@ if(ENABLE_TESTING)
   target_link_libraries(test_ekin PRIVATE GTest::GTestMain GTest::GTest mdlib)
   add_test(NAME Ekin COMMAND test_ekin)
 
+  add_executable(test_read tests/test_read.cpp)
+  target_include_directories(test_read PRIVATE ${CMAKE_SOURCE_DIR}/src)
+  target_link_libraries(test_read PRIVATE GTest::GTestMain GTest::GTest mdlib)
+  add_test(NAME Read COMMAND test_read)
 endif()
 
