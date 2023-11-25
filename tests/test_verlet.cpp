@@ -6,7 +6,7 @@
 
 TEST(Verlet, TimeIntegration){
 
-    // Create a small molecular system with 2 particles inside the cutoff
+    // Create a small molecular system with 2 particles 
     mdsys_t sys1;
     sys1.natoms = 2;
     sys1.mass = 1.0;
@@ -29,10 +29,11 @@ TEST(Verlet, TimeIntegration){
     sys1.fx[0] = 0.5; sys1.fy[0] = -1.0; sys1.fz[0] = 0.0;
     sys1.fx[1] = -0.5; sys1.fy[1] = 1.0; sys1.fz[1] = 0.0;
 
-    // Call the force function
+    // Call the verlet function
 
     velverlet_1(&sys1);
 
+    // Check the computed forces against expected values
     ASSERT_DOUBLE_EQ(sys1.rx[0],2.5004183999999725);
     ASSERT_DOUBLE_EQ(sys1.ry[0],7.499163200000055);
     ASSERT_DOUBLE_EQ(sys1.rz[0],2.0);
@@ -42,6 +43,7 @@ TEST(Verlet, TimeIntegration){
 
     velverlet_1(&sys1);
 
+    // Check the computed forces against expected values
     ASSERT_DOUBLE_EQ(sys1.rx[1],2.4987448000000825);
     ASSERT_DOUBLE_EQ(sys1.ry[1],4.002510399999835);
     ASSERT_DOUBLE_EQ(sys1.rz[1],11.0);

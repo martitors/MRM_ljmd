@@ -6,8 +6,8 @@
 #include <random>
 
 
-TEST(ForceCalculation, ComputesForcesInsideCutoffDirectly) {
-    // Create a small molecular system with 2 particles inside the cutoff
+TEST(ForceCalculation, ComputesForces) {
+    // Create two small molecular system with 3 and 4 particles
     mdsys_t sys1;
     sys1.natoms = 4;
     sys1.mass = 1.0;
@@ -49,6 +49,7 @@ TEST(ForceCalculation, ComputesForcesInsideCutoffDirectly) {
     sys2.vx[1] = 0.0; sys2.vy[1] = 0.0; sys2.vz[1] = 0.0;
     sys2.vx[2] = 0.0; sys2.vy[2] = 0.0; sys2.vz[2] = 0.0;
 
+    //initialise forces to zero
     azzero(sys1.fx, sys1.natoms);
     azzero(sys1.fy, sys1.natoms);
     azzero(sys1.fz, sys1.natoms);
@@ -60,18 +61,20 @@ TEST(ForceCalculation, ComputesForcesInsideCutoffDirectly) {
     force(&sys1);
     force(&sys2);
 
+    //Check that f of particles extern to the cutoff is zero
     ASSERT_DOUBLE_EQ(sys1.fx[3],0.0);
     ASSERT_DOUBLE_EQ(sys1.fy[3],0.0);
     ASSERT_DOUBLE_EQ(sys1.fz[3],0.0);
     ASSERT_DOUBLE_EQ(sys2.fx[1],0.0);
     ASSERT_DOUBLE_EQ(sys2.fy[1],0.0);
     ASSERT_DOUBLE_EQ(sys2.fz[1],0.0);
-
+    
+    // Check the computed forces against expected values
     ASSERT_DOUBLE_EQ(sys1.fx[0],0.11659418934778376);
     ASSERT_DOUBLE_EQ(sys2.fy[2],-0.036694101508916367);
     ASSERT_DOUBLE_EQ(sys2.fz[0],-sys2.fz[2]);
 
-    // Check the computed forces against expected values
+
 
     // Clean up: free memory
     free(sys1.rx);
