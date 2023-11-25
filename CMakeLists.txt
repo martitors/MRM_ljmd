@@ -34,5 +34,10 @@ if(ENABLE_TESTING)
   target_link_libraries(test_force PRIVATE GTest::GTestMain GTest::GTest mdlib)
   add_test(NAME Force COMMAND test_force)
 
+  add_executable(test_ekin tests/test_ekin.cpp)
+  target_include_directories(test_ekin PRIVATE ${CMAKE_SOURCE_DIR}/src)
+  target_link_libraries(test_ekin PRIVATE GTest::GTestMain GTest::GTest mdlib)
+  add_test(NAME Ekin COMMAND test_ekin)
+
 endif()
 
