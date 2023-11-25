@@ -13,6 +13,9 @@ void force(mdsys_t *sys)
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
+#ifdef _OPENMP
+#pragma omp parallel for collapse(2) reduction(+ : sys->epot)
+#endif    
     for(i=0; i < (sys->natoms); ++i) {
         for(j=0; j < (sys->natoms); ++j) {
 
