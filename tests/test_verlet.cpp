@@ -1,55 +1,64 @@
 // unit test example with test fixture
 #include "gtest/gtest.h"
 #include "verlet.h"
+#include "types.h"
+#include "allocate.h"
 
-class VerletTest: public ::testing::Test {
+TEST(Verlet, TimeIntegration){
 
-protected:
+    // Create a small molecular system with 2 particles inside the cutoff
+    mdsys_t sys1;
+    sys1.natoms = 2;
+    sys1.mass = 1.0;
+    sys1.epsilon = 2.0;
+    sys1.sigma = 1.0;
+    sys1.rcut = 4.0;
+    sys1.box = 10.0;
+    sys1.dt = 2.0;
 
-    mdsys_t *sys;
+    // Allocate memory
+    allocate(&sys1);
 
-    void SetUp()
-    {
-        sys = new mdsys_t;
-        sys->natoms = 2;
-        sys->mass = 1.0;
-        sys->rx = new double[2];
-        sys->vx = new double[2];
-        sys->fx = new double[2];
-        sys->rx[0] = -1.0;
-        sys->rx[1] = 1.0;
-        sys->vx[0] = 0.0;
-        sys->vx[1] = 0.0;
-        sys->fx[0] = 1.0;
-        sys->fx[1] = 0.2;
-    }
+    // Initialize positions, velocities, and forces
+    sys1.rx[0] = 0.5; sys1.ry[0] = 1.5; sys1.rz[0] = 2.0;
+    sys1.rx[1] = 2.5; sys1.ry[1] = 0.0; sys1.rz[1] = 3.0;
 
-    void TearDown()
-        {
-            delete[] sys->rx;
-            delete[] sys->vx;
-            delete[] sys->fx;
+    sys1.vx[0] = 1.0; sys1.vy[0] = 3.0; sys1.vz[0] = 0.0;
+    sys1.vx[1] = 0.0; sys1.vy[0] = 1.0; sys1.vz[1] = 2.0;
+  
+    sys1.fx[0] = 0.5; sys1.fy[0] = -1.0; sys1.fz[0] = 0.0;
+    sys1.fx[1] = -0.5; sys1.fy[0] = 1.0; sys1.fz[1] = 0.0;
 
-            delete sys;
-        }
-};
+    // Call the force function
 
-TEST_F(VerletTest, step1)
-{
-    ASSERT_NE(sys,nullptr);
-    ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
-    ASSERT_DOUBLE_EQ(sys->vx[0],0.0);
-    velverlet_1(sys);
-    ASSERT_DOUBLE_EQ(sys->rx[0],-0.5);
-    ASSERT_DOUBLE_EQ(sys->vx[0], 0.5);
-}
+    velverlet_1(&sys1);
 
-TEST_F(VerletTest, step2)
-{
-    ASSERT_NE(sys,nullptr);
-    ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
-    ASSERT_DOUBLE_EQ(sys->vx[0],0.0);
-    velverlet_2(sys);
-    ASSERT_DOUBLE_EQ(sys->rx[0],-1.0);
-    ASSERT_DOUBLE_EQ(sys->vx[0], 0.5);
+    ASSERT_DOUBLE_EQ(sys1.rx[0],2.5004183999999725);
+    ASSERT_DOUBLE_EQ(sys1.ry[0],3.500836799999945);
+    ASSERT_DOUBLE_EQ(sys1.rz[0],2.0);
+    ASSERT_DOUBLE_EQ(sys1.vx[0],1.0002091999999863);
+    ASSERT_DOUBLE_EQ(sys1.vy[0],1.0004183999999725);
+    ASSERT_DOUBLE_EQ(sys1.vz[0],0.0);
+
+    velverlet_1(&sys1);
+
+    ASSERT_DOUBLE_EQ(sys1.rx[1],2.4987448000000825);
+    ASSERT_DOUBLE_EQ(sys1.ry[1],0.0);
+    ASSERT_DOUBLE_EQ(sys1.rz[1],11.0);
+    ASSERT_DOUBLE_EQ(sys1.vx[1],-0.00041839999997254782);
+    ASSERT_DOUBLE_EQ(sys1.vy[1],0.0);
+    ASSERT_DOUBLE_EQ(sys1.vz[1],2.0);
+
+
+    // Clean up: free memory
+    free(sys1.rx);
+    free(sys1.ry);
+    free(sys1.rz);
+    free(sys1.vx);
+    free(sys1.vy);
+    free(sys1.vz);
+    free(sys1.fx);
+    free(sys1.fy);
+    free(sys1.fz);
+
 }

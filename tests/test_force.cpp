@@ -30,7 +30,7 @@ TEST(ForceCalculation, ComputesForcesInsideCutoffDirectly) {
 
 
     // Initialize positions, velocities, and forces
-    sys1.rx[0] = 0.5; sys1.ry[0] = 1.0; sys1.rz[0] = 2.0;
+    sys1.rx[0] = 0.5; sys1.ry[0] = 11.0; sys1.rz[0] = 2.0;
     sys1.rx[1] = 2.5; sys1.ry[1] = 0.0; sys1.rz[1] = 3.0;
     sys1.rx[2] = 3.0; sys1.ry[2] = 0.0; sys1.rz[2] = 2.0;
     sys1.rx[3] = 0.0; sys1.ry[3] = 5.0; sys1.rz[3] = 0.0;
