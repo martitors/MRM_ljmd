@@ -4,11 +4,13 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
 
+target_compile_options(mdlib PRIVATE -O3)
 target_link_libraries(mdlib m)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 
 add_executable(main src/main.cpp)
+target_compile_options(main PUBLIC -O3)
 target_link_libraries(main PUBLIC mdlib m)
 
 
