@@ -7,7 +7,7 @@ add_compile_definitions( _MPI=yes )
 include_directories( ${MPI_C_INCLUDE_PATH} )
 
 add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
-
+target_compile_options(mdlib PRIVATE -O3 -ffast-math -fexpensive-optimizations -msse3)
 target_link_libraries(mdlib m MPI::MPI_C)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include MPI_LIB)
 
@@ -15,6 +15,10 @@ target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include MPI_LIB)
 add_executable(main src/main.cpp)
 target_link_libraries(main PUBLIC mdlib m MPI::MPI_CXX)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include MPI_LIB)
+
+add_executable(main src/main.cpp)
+target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
+target_link_libraries(main PUBLIC mdlib m)
 
 
 
