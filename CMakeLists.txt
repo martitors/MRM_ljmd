@@ -13,13 +13,9 @@ target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include MPI_LIB)
 
 
 add_executable(main src/main.cpp)
+target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
 target_link_libraries(main PUBLIC mdlib m MPI::MPI_CXX)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include MPI_LIB)
-
-add_executable(main src/main.cpp)
-target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
-target_link_libraries(main PUBLIC mdlib m)
-
 
 
 #option(ENABLE_TESTING "Enable building unit tests" ON)
