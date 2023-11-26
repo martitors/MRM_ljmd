@@ -1,6 +1,9 @@
 /* compute forces */
 #include "../include/force_compute.h"
 
+#ifdef _MPI
+#include "mpi.h"
+#endif //_MPI
 void force(mdsys_t *sys)
 {
     double r,ffac;
@@ -8,12 +11,31 @@ void force(mdsys_t *sys)
     int i,j;
 
     /* zero energy and forces */
+    double epot = 0.0;
+
+    #if defined(_MPI)
+    int ii;
+    azzero( sys->cx, sys->natoms );
+    azzero( sys->cy, sys->natoms );
+    azzero( sys->cz, sys->natoms );
+    
+    MPI_Bcast( sys->rx, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
+    MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
+    MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
+#else
     sys->epot=0.0;
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);
 
+#endif
+#if defined(_MPI)
+    for(i=0; i < (sys->natoms - 1); i += sys->npes) {
+            ii = i + sys->rank;
+            if (ii >= (sys->natoms - 1)) break;
+#else
     for(i=0; i < (sys->natoms); ++i) {
+#endif
         for(j=0; j < (sys->natoms); ++j) {
 
             /* particles have no interactions with themselves */
@@ -30,16 +52,33 @@ void force(mdsys_t *sys)
                 ffac = -4.0*sys->epsilon*(-12.0*pow(sys->sigma/r,12.0)/r
                                          +6*pow(sys->sigma/r,6.0)/r);
 
-                sys->epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)
+                epot += 0.5*4.0*sys->epsilon*(pow(sys->sigma/r,12.0)
                                                -pow(sys->sigma/r,6.0));
 
+            #if defined(_MPI)
+                sys->cx[i] += rx/r*ffac;
+                sys->cy[i] += ry/r*ffac;
+                sys->cz[i] += rz/r*ffac;
+            #else
                 sys->fx[i] += rx/r*ffac;
                 sys->fy[i] += ry/r*ffac;
                 sys->fz[i] += rz/r*ffac;
+
+            #endif
             }
         }
     }
+    #if defined(_MPI)
+    MPI_Reduce( sys->cx, sys->fx, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
+    MPI_Reduce( sys->cy, sys->fy, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
+    MPI_Reduce( sys->cz, sys->fz, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
+    MPI_Reduce( &epot, &sys->epot, 1, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
+#else
+    sys->epot = epot;
+#endif
+
 }
+
 
 void ekin(mdsys_t *sys)
 {
