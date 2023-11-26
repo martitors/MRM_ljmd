@@ -12,7 +12,7 @@ void force(mdsys_t *sys)
 
     /* zero energy and forces */
     double epot = 0.0;
-
+    sys->epot=0.0;
     #if defined(_MPI)
     int ii;
     azzero( sys->cx, sys->natoms );
@@ -23,7 +23,6 @@ void force(mdsys_t *sys)
     MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
     MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
 #else
-    sys->epot=0.0;
     azzero(sys->fx,sys->natoms);
     azzero(sys->fy,sys->natoms);
     azzero(sys->fz,sys->natoms);

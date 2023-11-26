@@ -66,7 +66,6 @@ int main(int argc, char **argv)
     sys.cy = (double*) malloc( sys.natoms * sizeof(double) );
     sys.cz = (double*) malloc( sys.natoms * sizeof(double) );
     #endif
-    printf("%d",sys.natoms);
 
     allocate(&sys);
 
@@ -127,15 +126,11 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        if(mpirank == 0){
         velverlet_1(&sys);
-        }
         force(&sys);   
-        if(mpirank == 0){
         velverlet_2(&sys);
         ekin(&sys);
         }
-    }
     /**************************************************/
     if(mpirank == 0){
     /* clean up: close files, free memory */
