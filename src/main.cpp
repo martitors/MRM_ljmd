@@ -56,14 +56,12 @@ int main(int argc, char **argv)
 
     #ifdef _MPI
     MPI_Bcast(&sys.natoms, 1, MPI_INT, 0, sys.mpicomm);
-    MPI_Bcast(&sys.mass, 1, MPI_DOUBLE, 0, sys.mpicomm);
     MPI_Bcast(&sys.epsilon, 1, MPI_DOUBLE, 0,sys.mpicomm);
     MPI_Bcast(&sys.sigma, 1, MPI_DOUBLE, 0, sys.mpicomm);
     MPI_Bcast(&sys.rcut, 1, MPI_DOUBLE, 0, sys.mpicomm);
     MPI_Bcast(&sys.box, 1, MPI_DOUBLE, 0, sys.mpicomm);
     MPI_Bcast(&sys.nsteps, 1, MPI_INT, 0, sys.mpicomm);
     MPI_Bcast(&sys.dt, 1, MPI_DOUBLE, 0, sys.mpicomm);
-    MPI_Bcast(&nprint, 1, MPI_INT, 0, sys.mpicomm);
     sys.cx = (double*) malloc( sys.natoms * sizeof(double) );
     sys.cy = (double*) malloc( sys.natoms * sizeof(double) );
     sys.cz = (double*) malloc( sys.natoms * sizeof(double) );
