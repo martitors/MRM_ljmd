@@ -8,6 +8,7 @@ extern "C" {
     #include "types.h"
     #include "constants.h"
     #include "utilities.h"
+    #include <omp.h>
 
     void force(mdsys_t *sys);
     void ekin(mdsys_t *sys);
