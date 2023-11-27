@@ -46,11 +46,12 @@ TEST(ForceCalculation, ComputesForces) {
     allocate(&sys2);
 
     // Initialize positions
-    if (sys1.rank ==0){
+    if (sys1.rank == 0){
+
     sys1.rx[0] = 0.5; sys1.ry[0] = 0.5; sys1.rz[0] = 0.5;
     sys1.rx[1] = 2.5; sys1.ry[1] = 0.0; sys1.rz[1] = 3.0;
     sys1.rx[2] = 10.0; sys1.ry[2] = 0.0; sys1.rz[2] = 0.0;
-    sys1.rx[3] = 5.0; sys1.ry[2] = 0.0; sys1.rz[2] = 0.0;
+    sys1.rx[3] = 5.0; sys1.ry[3] = 0.0; sys1.rz[3] = 0.0;
 
     sys2.rx[0] = 1.0; sys2.ry[0] = 0.0; sys2.rz[0] = 2.0;
     sys2.rx[1] = 0.0; sys2.ry[1] = 0.0; sys2.rz[1] = 5.0;
@@ -58,19 +59,23 @@ TEST(ForceCalculation, ComputesForces) {
 
 
     // Initialize velocities and forces
+
+    }
+    else{
+    azzero(sys1.rx, sys1.natoms);
+    azzero(sys1.ry, sys1.natoms);
+    azzero(sys1.rz, sys1.natoms);
+    azzero(sys2.rx, sys2.natoms);
+    azzero(sys2.ry, sys2.natoms);
+    azzero(sys2.rz, sys2.natoms);
+    }
+
     azzero(sys1.vx, sys1.natoms);
     azzero(sys1.vy, sys1.natoms);
     azzero(sys1.vz, sys1.natoms);
-    azzero(sys1.fx, sys1.natoms);
-    azzero(sys1.fy, sys1.natoms);
-    azzero(sys1.fz, sys1.natoms);
     azzero(sys2.vx, sys2.natoms);
     azzero(sys2.vy, sys2.natoms);
     azzero(sys2.vz, sys2.natoms);
-    azzero(sys2.fx, sys2.natoms);
-    azzero(sys2.fy, sys2.natoms);
-    azzero(sys2.fz, sys2.natoms);
-    }
 
     #ifdef _MPI
     sys1.cx = (double*) malloc( sys1.natoms * sizeof(double) );
