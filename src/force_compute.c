@@ -26,6 +26,8 @@ void force(mdsys_t *sys)
     MPI_Bcast( sys->rx, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
     MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
     MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
+
+    
     #else
     sys->epot=0.0;
 
@@ -34,6 +36,7 @@ void force(mdsys_t *sys)
     azzero(sys->fz,sys->natoms);
 
     #endif
+
 
     c12=4.0*sys->epsilon*pow(sys->sigma,12.0);
     c6 =4.0*sys->epsilon*pow(sys->sigma, 6.0);

@@ -41,6 +41,7 @@ int main(int argc, char **argv)
     MPI_Comm_size( MPI_COMM_WORLD, &sys.npes );
     MPI_Comm_rank( MPI_COMM_WORLD, &sys.rank );    
     mpirank = sys.rank;
+
     if (mpirank==0) printf("MPI correctly initialized\n");
     #endif
 
