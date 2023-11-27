@@ -3,6 +3,13 @@ cmake_minimum_required(VERSION 3.16)
 project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 option( USE_MPI "Build with MPI support" OFF )
+option(USE_OPENMP "Build with OPENMP support" ON)
+
+if (USE_OPENMP)
+	find_package(OpenMP REQUIRED)
+	add_compile_definitions(_OPENMP=yes)
+endif()
+
 
 if (USE_MPI) 
 
@@ -21,6 +28,11 @@ target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 add_executable(main src/main.cpp)
 target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
+
+if (USE_OPENMP)
+        target_link_libraries(main PUBLIC OpenMP::OpenMP_CXX)
+        target_compile_options(main PUBLIC -fopenmp)
+endif()
 target_link_libraries(main PUBLIC mdlib m)
 if (USE_MPI) 
     target_link_libraries(main PUBLIC MPI::MPI_CXX)
@@ -28,7 +40,7 @@ endif()
 target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 
-option(ENABLE_TESTING "Enable building unit tests" ON)
+option(ENABLE_TESTING "Enable building unit tests" OFF)
 if(ENABLE_TESTING)
   enable_testing()
   enable_language(CXX)
