@@ -40,8 +40,7 @@ int main(int argc, char **argv)
     MPI_Comm_size( sys.mpicomm, &sys.npes );
     MPI_Comm_rank( sys.mpicomm, &sys.rank );    
     mpirank = sys.rank;
-    printf("MPI correct initialization");
-    printf("%d",sys.npes);
+    if (mpirank==0) printf("MPI correctly initialized\n");
     #endif
 
     if (mpirank==0){

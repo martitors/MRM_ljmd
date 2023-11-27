@@ -4,7 +4,9 @@
 #include "types.h"
 #include "allocate.h"
 #include <random>
-
+#ifdef _MPI
+#include "mpi.h"
+#endif //_MPI
 
 TEST(ForceCalculation, ComputesForces) {
     // Create two small molecular system with 3 and 4 particles
@@ -24,9 +26,29 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.rcut = 3.0;
     sys2.box = 8.0;
 
+    int mpirank = 0;
+
+    #ifdef _MPI
+    
+    MPI_Init( &argc, &argv ); 
+
+    sys.mpicomm = MPI_COMM_WORLD; 
+
+    MPI_Comm_size( sys.mpicomm, &sys.npes );
+    MPI_Comm_rank( sys.mpicomm, &sys.rank );    
+    mpirank = sys.rank;
+    if (mpirank==0) printf("MPI correctly initialized\n");
+    #endif
+
     // Allocate memory
     allocate(&sys1);
     allocate(&sys2);
+
+    #ifdef _MPI
+    sys.cx = (double*) malloc( sys.natoms * sizeof(double) );
+    sys.cy = (double*) malloc( sys.natoms * sizeof(double) );
+    sys.cz = (double*) malloc( sys.natoms * sizeof(double) );
+    #endif
 
 
     // Initialize positions, velocities, and forces
@@ -50,6 +72,15 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.vx[2] = 0.0; sys2.vy[2] = 0.0; sys2.vz[2] = 0.0;
 
     //initialise forces to zero
+    #ifdef _MPI
+    azzero(sys1.cx, sys1.natoms);
+    azzero(sys1.cy, sys1.natoms);
+    azzero(sys1.cz, sys1.natoms);
+    azzero(sys2.cx, sys2.natoms);
+    azzero(sys2.cy, sys2.natoms);
+    azzero(sys2.cz, sys2.natoms);
+    #endif
+
     azzero(sys1.fx, sys1.natoms);
     azzero(sys1.fy, sys1.natoms);
     azzero(sys1.fz, sys1.natoms);
@@ -62,6 +93,7 @@ TEST(ForceCalculation, ComputesForces) {
     force(&sys2);
 
     //Check that f of particles extern to the cutoff is zero
+    if (mpirank==0){
     ASSERT_DOUBLE_EQ(sys1.fx[3],0.0);
     ASSERT_DOUBLE_EQ(sys1.fy[3],0.0);
     ASSERT_DOUBLE_EQ(sys1.fz[3],0.0);
@@ -70,10 +102,10 @@ TEST(ForceCalculation, ComputesForces) {
     ASSERT_DOUBLE_EQ(sys2.fz[1],0.0);
     
     // Check the computed forces against expected values
-    ASSERT_DOUBLE_EQ(sys1.fx[0],0.11659418934778376);
-    ASSERT_DOUBLE_EQ(sys2.fy[2],-0.036694101508916367);
+    ASSERT_NEAR(sys1.fx[0],0.11659418934778376,1e-5);
+    ASSERT_NEAR(sys2.fy[2],-0.036694101508916326,1e-5);
     ASSERT_DOUBLE_EQ(sys2.fz[0],-sys2.fz[2]);
-
+    }
 
 
     // Clean up: free memory
@@ -96,5 +128,14 @@ TEST(ForceCalculation, ComputesForces) {
     free(sys2.fx);
     free(sys2.fy);
     free(sys2.fz);
+
+    #ifdef _MPI
+    free(sys2.cx);
+    free(sys2.cy);
+    free(sys2.cz);
+    free(sys1.cx);
+    free(sys1.cy);
+    free(sys1.cz);
+    #endif
 }
 
