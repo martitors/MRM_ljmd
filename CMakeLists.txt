@@ -2,17 +2,33 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
+option(USE_OPENMP "Build with OPENMP support" ON)
+
+if (USE_OPENMP)
+	find_package(OpenMP REQUIRED)
+	add_compile_definitions(_OPENMP=yes)
+endif()
 add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
 
-find_package(OpenMP REQUIRED)
-target_link_libraries(mdlib m OpenMP::OpenMP_CXX)
+target_compile_options(mdlib PRIVATE -O3 -ffast-math -fexpensive-optimizations -msse3)
+
+if (USE_OPENMP)
+	target_link_libraries(mdlib OpenMP::OpenMP_CXX)
+	target_compile_options(mdlib PRIVATE -fopenmp)
+endif()
+target_link_libraries(mdlib m)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-add_executable(main src/main.cpp)
-target_link_libraries(main PUBLIC mdlib m OpenMP::OpenMP_CXX)
-target_compile_options(main PUBLIC -fopenmp)
 
-target_compile_options(mdlib PRIVATE -fopenmp)
+add_executable(main src/main.cpp)
+target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
+
+if (USE_OPENMP)
+        target_link_libraries(main OpenMP::OpenMP_CXX)
+        target_compile_options(main PRIVATE -fopenmp)
+endif()
+target_link_libraries(main PUBLIC mdlib m)
+
 
 option(ENABLE_TESTING "Enable building unit tests" ON)
 if(ENABLE_TESTING)

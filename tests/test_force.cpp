@@ -70,8 +70,8 @@ TEST(ForceCalculation, ComputesForces) {
     ASSERT_DOUBLE_EQ(sys2.fz[1],0.0);
     
     // Check the computed forces against expected values
-    ASSERT_DOUBLE_EQ(sys1.fx[0],0.11659418934778376);
-    ASSERT_DOUBLE_EQ(sys2.fy[2],-0.036694101508916367);
+    ASSERT_DOUBLE_EQ(sys1.fx[0],0.11659418934778368);
+    ASSERT_DOUBLE_EQ(sys2.fy[2],-0.036694101508916326);
     ASSERT_DOUBLE_EQ(sys2.fz[0],-sys2.fz[2]);
 
 
