@@ -1,5 +1,7 @@
 #include "../include/verlet.h"
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 /* velocity verlet */
 void velverlet_1(mdsys_t *sys)
@@ -7,7 +9,7 @@ void velverlet_1(mdsys_t *sys)
     int i;
 
     /* first part: propagate velocities by half and positions by full step */
-    #if defined(_OPENMP)
+    #ifdef _OPENMP
     #pragma omp parallel for
     #endif
 
@@ -27,7 +29,7 @@ void velverlet_2(mdsys_t *sys)
     int i;
 
     /* second part: propagate velocities by another half step */
-    #if defined(_OPENMP)
+    #ifdef _OPENMP
     #pragma omp parallel for
     #endif
     for (i=0; i<sys->natoms; ++i) {

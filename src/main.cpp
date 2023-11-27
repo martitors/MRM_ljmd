@@ -13,7 +13,9 @@
 #include "force_compute.h"
 #include "cleanup.h"
 #include "allocate.h"
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 /* generic file- or pathname buffer length */
 #define LJMD_VERSION 1.0
