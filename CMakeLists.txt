@@ -4,13 +4,15 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
 
-target_link_libraries(mdlib m)
+find_package(OpenMP REQUIRED)
+target_link_libraries(mdlib m OpenMP::OpenMP_CXX)
 target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-
 add_executable(main src/main.cpp)
-target_link_libraries(main PUBLIC mdlib m)
+target_link_libraries(main PUBLIC mdlib m OpenMP::OpenMP_CXX)
+target_compile_options(main PUBLIC -fopenmp)
 
+target_compile_options(mdlib PRIVATE -fopenmp)
 
 option(ENABLE_TESTING "Enable building unit tests" ON)
 if(ENABLE_TESTING)
