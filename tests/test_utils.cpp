@@ -5,6 +5,10 @@
 #include <chrono>
 #include <thread>
 
+#ifdef _OPENMP
+ #include <omp.h>
+#endif
+
 void sleep(double seconds){
     std::chrono::duration<double> duration(seconds);
     std::this_thread::sleep_for(duration);

@@ -2,6 +2,9 @@
 #include "gtest/gtest.h"
 #include "verlet.h"
 #include "allocate.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 TEST(Verlet, TimeIntegration){
 

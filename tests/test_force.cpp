@@ -8,6 +8,9 @@
 #ifdef _MPI
 #include "mpi.h"
 #endif  
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 // Test case for the force function
 TEST(ForceCalculation, ComputesForces) {

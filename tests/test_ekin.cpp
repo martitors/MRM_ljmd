@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 #include "force_compute.h"
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 TEST(Kinetic_Energy, KE_2atoms) {
         mdsys_t sys;
