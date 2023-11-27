@@ -10,7 +10,6 @@ extern "C" {
     #include "utilities.h"
 
     void force(mdsys_t *sys);
-    void ekin(mdsys_t *sys);
 
     #ifdef  __cplusplus
 	}

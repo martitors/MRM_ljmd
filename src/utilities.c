@@ -51,3 +51,26 @@ int get_a_line(FILE *fp, char *buf)
     }
     return 0;
 }
+
+void ekin(mdsys_t *sys)
+{
+    int i;
+
+    sys->ekin=0.0;
+    double ekin_tmp = 0.0;
+
+#ifdef _OPENMP
+#pragma omp parallel for reduction(+ : ekin_tmp)
+#endif
+    for (i=0; i<sys->natoms; ++i) {
+        #ifdef _OPENMP
+        ekin_tmp += 0.5*mvsq2e*sys->mass*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
+        #else
+        sys->ekin += 0.5*mvsq2e*sys->mass*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
+        #endif
+    }
+    #ifdef _OPENMP
+    sys->ekin = ekin_tmp;
+    #endif
+    sys->temp = 2.0*sys->ekin/(3.0*sys->natoms-3.0)/kboltz;
+}

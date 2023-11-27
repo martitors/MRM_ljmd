@@ -38,10 +38,8 @@ int main(int argc, char **argv)
     
     MPI_Init( &argc, &argv ); 
 
-    sys.mpicomm = MPI_COMM_WORLD; 
-
-    MPI_Comm_size( sys.mpicomm, &sys.npes );
-    MPI_Comm_rank( sys.mpicomm, &sys.rank );    
+    MPI_Comm_size( MPI_COMM_WORLD, &sys.npes );
+    MPI_Comm_rank( MPI_COMM_WORLD, &sys.rank );    
     mpirank = sys.rank;
     if (mpirank==0) printf("MPI correctly initialized\n");
     #endif
@@ -55,13 +53,13 @@ int main(int argc, char **argv)
     }
 
     #ifdef _MPI
-    MPI_Bcast(&sys.natoms, 1, MPI_INT, 0, sys.mpicomm);
-    MPI_Bcast(&sys.epsilon, 1, MPI_DOUBLE, 0,sys.mpicomm);
-    MPI_Bcast(&sys.sigma, 1, MPI_DOUBLE, 0, sys.mpicomm);
-    MPI_Bcast(&sys.rcut, 1, MPI_DOUBLE, 0, sys.mpicomm);
-    MPI_Bcast(&sys.box, 1, MPI_DOUBLE, 0, sys.mpicomm);
-    MPI_Bcast(&sys.nsteps, 1, MPI_INT, 0, sys.mpicomm);
-    MPI_Bcast(&sys.dt, 1, MPI_DOUBLE, 0, sys.mpicomm);
+    MPI_Bcast(&sys.natoms, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sys.epsilon, 1, MPI_DOUBLE, 0,MPI_COMM_WORLD);
+    MPI_Bcast(&sys.sigma, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sys.rcut, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sys.box, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sys.nsteps, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&sys.dt, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     sys.cx = (double*) malloc( sys.natoms * sizeof(double) );
     sys.cy = (double*) malloc( sys.natoms * sizeof(double) );
     sys.cz = (double*) malloc( sys.natoms * sizeof(double) );

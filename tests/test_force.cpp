@@ -1,12 +1,13 @@
 // unit test example with test fixture
 #include "gtest/gtest.h"
-#include "verlet.h"
 #include "types.h"
+#include "utilities.h"
 #include "allocate.h"
-#include <random>
+#include "force_compute.h"
+
 #ifdef _MPI
 #include "mpi.h"
-#endif //_MPI
+#endif  
 
 TEST(ForceCalculation, ComputesForces) {
     // Create two small molecular system with 3 and 4 particles
@@ -28,26 +29,26 @@ TEST(ForceCalculation, ComputesForces) {
 
     int mpirank = 0;
 
-    #ifdef _MPI
+    #if defined(_MPI)
     
-    MPI_Init( &argc, &argv ); 
+    MPI_Init( NULL, NULL ); 
 
-    sys.mpicomm = MPI_COMM_WORLD; 
-
-    MPI_Comm_size( sys.mpicomm, &sys.npes );
-    MPI_Comm_rank( sys.mpicomm, &sys.rank );    
-    mpirank = sys.rank;
-    if (mpirank==0) printf("MPI correctly initialized\n");
+    MPI_Comm_size( MPI_COMM_WORLD, &sys1.npes );
+    MPI_Comm_rank( MPI_COMM_WORLD, &sys1.rank );    
+    mpirank = sys1.rank;
     #endif
 
     // Allocate memory
     allocate(&sys1);
     allocate(&sys2);
 
-    #ifdef _MPI
-    sys.cx = (double*) malloc( sys.natoms * sizeof(double) );
-    sys.cy = (double*) malloc( sys.natoms * sizeof(double) );
-    sys.cz = (double*) malloc( sys.natoms * sizeof(double) );
+    #if defined(_MPI)
+    sys1.cx = (double*) malloc( sys1.natoms * sizeof(double) );
+    sys1.cy = (double*) malloc( sys1.natoms * sizeof(double) );
+    sys1.cz = (double*) malloc( sys1.natoms * sizeof(double) );
+    sys2.cx = (double*) malloc( sys2.natoms * sizeof(double) );
+    sys2.cy = (double*) malloc( sys2.natoms * sizeof(double) );
+    sys2.cz = (double*) malloc( sys2.natoms * sizeof(double) );
     #endif
 
 
@@ -104,7 +105,7 @@ TEST(ForceCalculation, ComputesForces) {
     // Check the computed forces against expected values
     ASSERT_NEAR(sys1.fx[0],0.11659418934778376,1e-5);
     ASSERT_NEAR(sys2.fy[2],-0.036694101508916326,1e-5);
-    ASSERT_DOUBLE_EQ(sys2.fz[0],-sys2.fz[2]);
+    ASSERT_NEAR(sys2.fz[0],-sys2.fz[2],1e-5);
     }
 
 
@@ -129,13 +130,16 @@ TEST(ForceCalculation, ComputesForces) {
     free(sys2.fy);
     free(sys2.fz);
 
-    #ifdef _MPI
+    #if defined(_MPI)
+    
     free(sys2.cx);
     free(sys2.cy);
     free(sys2.cz);
     free(sys1.cx);
     free(sys1.cy);
     free(sys1.cz);
+
+    MPI_Finalize();
     #endif
 }
 

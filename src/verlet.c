@@ -1,4 +1,4 @@
-#include "../include/verlet.h"
+#include "verlet.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif

@@ -7,6 +7,7 @@
 #ifdef _MPI
 #include "mpi.h"
 #endif //_MPI
+
 void force(mdsys_t *sys)
 {
     double ffac,c12,c6,rcsq,rsq;
@@ -17,14 +18,14 @@ void force(mdsys_t *sys)
     /* zero energy and forces */
     double epot = 0.0;
 
-    #if defined(_MPI)
+    #ifdef _MPI
     azzero( sys->cx, sys->natoms );
     azzero( sys->cy, sys->natoms );
     azzero( sys->cz, sys->natoms );
     
-    MPI_Bcast( sys->rx, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
-    MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
-    MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, sys->mpicomm );
+    MPI_Bcast( sys->rx, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
+    MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
+    MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
     #else
     sys->epot=0.0;
 
@@ -38,7 +39,7 @@ void force(mdsys_t *sys)
     c6 =4.0*sys->epsilon*pow(sys->sigma, 6.0);
     rcsq = sys->rcut * sys->rcut;
     
-#if defined(_MPI)
+#ifdef _MPI
     for(i=0; i < (sys->natoms - 1); i += sys->npes) {
             ii = i + sys->rank;
             if (ii >= (sys->natoms - 1)) break;
@@ -71,7 +72,7 @@ void force(mdsys_t *sys)
                 ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
                 epot += r6*(c12*r6 - c6);
 
-            #if defined(_MPI)
+            #ifdef _MPI
 
                 sys->cx[ii] += rx*ffac;          sys->cx[j] -= rx*ffac;
                 sys->cy[ii] += ry*ffac;          sys->cy[j] -= ry*ffac;
@@ -94,11 +95,11 @@ void force(mdsys_t *sys)
         }
     }
 
-    #if defined(_MPI)
-    MPI_Reduce( sys->cx, sys->fx, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
-    MPI_Reduce( sys->cy, sys->fy, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
-    MPI_Reduce( sys->cz, sys->fz, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
-    MPI_Reduce( &epot, &sys->epot, 1, MPI_DOUBLE, MPI_SUM, 0, sys->mpicomm );
+    #ifdef _MPI
+    MPI_Reduce( sys->cx, sys->fx, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( sys->cy, sys->fy, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( sys->cz, sys->fz, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( &epot, &sys->epot, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
     #elif defined (_OPENMP)
     }
     sys->epot = epot;
@@ -109,25 +110,4 @@ void force(mdsys_t *sys)
 }
 
 
-void ekin(mdsys_t *sys)
-{
-    int i;
 
-    sys->ekin=0.0;
-    double ekin_tmp = 0.0;
-
-#ifdef _OPENMP
-#pragma omp parallel for reduction(+ : ekin_tmp)
-#endif
-    for (i=0; i<sys->natoms; ++i) {
-        #ifdef _OPENMP
-        ekin_tmp += 0.5*mvsq2e*sys->mass*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
-        #else
-        sys->ekin += 0.5*mvsq2e*sys->mass*(sys->vx[i]*sys->vx[i] + sys->vy[i]*sys->vy[i] + sys->vz[i]*sys->vz[i]);
-        #endif
-    }
-    #ifdef _OPENMP
-    sys->ekin = ekin_tmp;
-    #endif
-    sys->temp = 2.0*sys->ekin/(3.0*sys->natoms-3.0)/kboltz;
-}
