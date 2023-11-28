@@ -13,11 +13,12 @@
 #include "force_compute.h"
 #include "cleanup.h"
 #include "allocate.h"
+
+#define LJMD_VERSION 1.0
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
-/* generic file- or pathname buffer length */
-#define LJMD_VERSION 1.0
 
 int main(int argc, char **argv)
 {
@@ -26,17 +27,17 @@ int main(int argc, char **argv)
     FILE *fp,*traj,*erg;
     mdsys_t sys;
     double t_start;
-    // #ifdef _OPENMP
-    //  int num_thrd= omp_get_max_threads();
-    //  printf("main num of threads: %d", num_thrd);
-    // #endif
 
     printf("LJMD version %3.1f\n", LJMD_VERSION);
 
     t_start = wallclock();
 
     read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
-
+    #ifdef _OPENMP
+        sys.nthreads = omp_get_max_threads();
+    #else
+        sys.nthreads =1;
+    #endif
     allocate(&sys);
 
      /* read restart */
