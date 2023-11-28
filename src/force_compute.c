@@ -19,8 +19,8 @@ void force(mdsys_t *sys)
 
     #ifdef _OPENMP
     #pragma omp parallel private(i,j,rsq,rsq_inv,r6,ffac,offset) reduction(+:epot)
-    #endif
-    {
+    {   
+	#endif
     	double c12=4.0*sys->epsilon*pow(sys->sigma,12.0);
     	double c6 =4.0*sys->epsilon*pow(sys->sigma, 6.0);
     	double rcsq = sys->rcut * sys->rcut;
@@ -40,7 +40,7 @@ void force(mdsys_t *sys)
        		        fromidx = tid * i;
          		toidx = (tid + 1) * i;
     		} else {
-        		i = sys->natoms/nthreas;
+        		i = sys->natoms/nthreads;
         		fromidx = tid * i + rest;
         		toidx = (tid + 1) * i + rest;
     		}
@@ -98,7 +98,7 @@ void force(mdsys_t *sys)
 
 	//with outside the box defined based on the thread ID
 	for(int ii=fromidx; ii<toidx ; ++ii) {
-		kk = ii + toidx;
+		int kk = ii + toidx;
 		rx1=sys->rx[ii];
                 ry1=sys->ry[ii];
                 rz1=sys->rz[ii];
@@ -129,7 +129,7 @@ void force(mdsys_t *sys)
 	#if defined (_OPENMP)
 	#pragma omp barrier
 	#endif
-                for (i=1; i < sys->nthreads; ++i) {
+                for (i=1; i < nthreads; ++i) {
 			int offs = i*sys->natoms;
 			for (int j=fromidx; j < toidx; ++j) {
 				sys->fx[i] += sys->fx[offset + i];
@@ -137,7 +137,7 @@ void force(mdsys_t *sys)
                 		sys->fz[i] += sys->fz[offset + i];
             		}
         	}
-    }//
+    }//end of parallel
      sys->epot = epot;
 }
 

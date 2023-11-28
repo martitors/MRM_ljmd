@@ -4,6 +4,9 @@
 #include "types.h"
 #include "allocate.h"
 #include <random>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 
 TEST(ForceCalculation, ComputesForces) {
