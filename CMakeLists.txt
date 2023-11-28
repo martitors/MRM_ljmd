@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
-option( USE_MPI "Build with MPI support" ON )
-option(USE_OPENMP "Build with OPENMP support" OFF)
+option( USE_MPI "Build with MPI support" OFF )
+option(USE_OPENMP "Build with OPENMP support" ON)
 
 if (USE_OPENMP)
 	find_package(OpenMP REQUIRED)
@@ -40,7 +40,7 @@ endif()
 target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 
-option(ENABLE_TESTING "Enable building unit tests" ON)
+option(ENABLE_TESTING "Enable building unit tests" OFF)
 if(ENABLE_TESTING)
   enable_testing()
   enable_language(CXX)

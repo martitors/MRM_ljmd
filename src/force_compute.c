@@ -46,17 +46,20 @@ void force(mdsys_t *sys)
     for(i=0; i < (sys->natoms - 1); i += sys->npes) {
             ii = i + sys->rank;
             if (ii >= (sys->natoms - 1)) break;
-
-#elif defined(_OPENMP)
-    #pragma omp parallel default(shared) private(ii,j,rx,ry,rz,ffac)
-    {
-    double *omp_fx = sys->fx;
-    double *omp_fy = sys->fy;
-    double *omp_fz = sys->fz;
+#endif
+#if defined(_OPENMP)
+    #pragma omp parallel reduction(+:epot)
+#endif
+   {double *omp_fx,*omp_fy,*omp_fz   ;
+#if defined(_OPENMP)
+    int tid=omp_get_thread_num();
+#else
+   int tid=0;
+#endif
+#if defined(_OPENMP)
     #pragma omp for reduction(+:epot, omp_fx[:sys->natoms],omp_fy[:sys->natoms],omp_fz[:sys->natoms])
     for(ii=0; ii < (sys->natoms); ++ii) {
 #else
-
     for(ii=0; ii < (sys->natoms); ++ii) {
 #endif
         for(j=ii+1; j < (sys->natoms); ++j) {
