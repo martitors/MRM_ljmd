@@ -1,7 +1,6 @@
 // unit test example with test fixture
 #include "gtest/gtest.h"
 #include "verlet.h"
-#include "types.h"
 #include "allocate.h"
 
 

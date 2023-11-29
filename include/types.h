@@ -2,7 +2,6 @@
 #ifdef __cplusplus
 extern "C" {
 	#endif
-	
 	#define TYPES_H
 	
     		/* structure to hold the complete information
@@ -16,6 +15,9 @@ extern "C" {
         		double *vx, *vy, *vz;
         		double *fx, *fy, *fz;
 				int nthreads;
+				int rank; 
+				int npes; 
+				double *cx, *cy, *cz; 
     		};
     		typedef struct _mdsys mdsys_t;
 	#ifdef __cplusplus

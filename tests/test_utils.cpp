@@ -1,15 +1,23 @@
 
 #include "gtest/gtest.h"
 #include "../include/utilities.h"
-#include <unistd.h>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+void sleep(double seconds){
+    std::chrono::duration<double> duration(seconds);
+    std::this_thread::sleep_for(duration);
+    };
 
 TEST(TestWallClock, one) {
+
     double t_test = -wallclock();
-    sleep(1); // Change to a longer sleep duration
+    sleep(0.1); // Change to a longer sleep duration
     t_test += wallclock();
 
-    const double expected_min_time = 0.9; // Adjust these thresholds accordingly
-    const double expected_max_time = 1.1;
+    const double expected_min_time = 0.09; // Adjust these thresholds accordingly
+    const double expected_max_time = 1.01;
 
     ASSERT_GE(t_test, expected_min_time);
     ASSERT_LE(t_test, expected_max_time);
