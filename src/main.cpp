@@ -13,19 +13,16 @@
 #include "force_compute.h"
 #include "cleanup.h"
 #include "allocate.h"
-#ifdef _OPENMP
-#include <omp.h>
-#endif
 
 #ifdef _MPI
 #include "mpi.h"
 #endif //_MPI
 
-#define LJMD_VERSION 1.0
-
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+#define LJMD_VERSION 1.0
 
 int main(int argc, char **argv)
 {
@@ -35,17 +32,14 @@ int main(int argc, char **argv)
     mdsys_t sys;
     double t_start;
 
-    int mpirank = 0;
-
     #ifdef _MPI
     
     MPI_Init( &argc, &argv ); 
 
     MPI_Comm_size( MPI_COMM_WORLD, &sys.npes );
     MPI_Comm_rank( MPI_COMM_WORLD, &sys.rank );    
-    mpirank = sys.rank;
 
-    if (mpirank==0) printf("MPI correctly initialized\n");
+    if (sys.rank==0) printf("MPI correctly initialized\n");
     #else
     sys.npes=1;
     sys.rank=0;
@@ -58,7 +52,7 @@ int main(int argc, char **argv)
     #endif
 
 
-    if (mpirank==0){
+    if (sys.rank==0){
     printf("LJMD version %3.1f\n", LJMD_VERSION);
     
     printf("\nnthreads: %d\n", sys.nthreads);
@@ -77,15 +71,15 @@ int main(int argc, char **argv)
     MPI_Bcast(&sys.rcut, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&sys.box, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&sys.nsteps, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&sys.dt, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     sys.cx = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
     sys.cy = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
     sys.cz = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
+    
     #endif
 
     allocate(&sys);
 
-    if(mpirank == 0){
+    if(sys.rank == 0){
 
         /* read restart */
         char restPath[256]; // Adjust the size based on your needs
@@ -101,9 +95,6 @@ int main(int argc, char **argv)
                 fscanf(fp,"%lf%lf%lf",sys.vx+i, sys.vy+i, sys.vz+i);
             }
             fclose(fp);
-            azzero(sys.fx, sys.nthreads*sys.natoms);
-            azzero(sys.fy, sys.nthreads*sys.natoms);
-            azzero(sys.fz, sys.nthreads*sys.natoms);
         } else {
             perror("cannot read restart file");
             return 3;
@@ -113,7 +104,7 @@ int main(int argc, char **argv)
     sys.nfi=0;
     force(&sys);
 
-    if(mpirank == 0){
+    if(sys.rank == 0){
         ekin(&sys);
 
         char ergPath[256]; // Adjust the size based on your needs
@@ -139,7 +130,7 @@ int main(int argc, char **argv)
     for(sys.nfi=1; sys.nfi <= sys.nsteps; ++sys.nfi) {
 
         /* write output, if requested */
-        if ((sys.nfi % nprint) == 0 && mpirank == 0)
+        if ((sys.nfi % nprint) == 0 && sys.rank == 0)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
@@ -149,7 +140,7 @@ int main(int argc, char **argv)
         ekin(&sys);
         }
     /**************************************************/
-    if(mpirank == 0){
+    if(sys.rank == 0){
     /* clean up: close files, free memory */
 
     printf("Simulation Done. Run time: %10.3fs\n", wallclock()-t_start);
