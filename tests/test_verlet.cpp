@@ -4,6 +4,7 @@
 #include "types.h"
 #include "allocate.h"
 
+
 TEST(Verlet, TimeIntegration){
 
     // Create a small molecular system with 2 particles 
@@ -15,6 +16,8 @@ TEST(Verlet, TimeIntegration){
     sys1.rcut = 4.0;
     sys1.box = 10.0;
     sys1.dt = 2.0;
+    sys1.nthreads = 1;
+
 
     // Allocate memory
     allocate(&sys1);

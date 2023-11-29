@@ -19,6 +19,7 @@ TEST(ForceCalculation, ComputesForces) {
     sys1.rcut = 4.0;
     sys1.box = 10.0;
 
+
     mdsys_t sys2;
     sys2.natoms = 3;
     sys2.mass = 2.0;
@@ -26,6 +27,14 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.sigma = 1.0;
     sys2.rcut = 3.0;
     sys2.box = 8.0;
+
+    #ifdef _OPENMP
+        sys1.nthreads = omp_get_max_threads();
+        sys2.nthreads = omp_get_max_threads();
+    #else
+        sys1.nthreads =1;
+        sys2.nthreads =1;
+    #endif
 
     // Allocate memory
     allocate(&sys1);
@@ -53,12 +62,12 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.vx[2] = 0.0; sys2.vy[2] = 0.0; sys2.vz[2] = 0.0;
 
     //initialise forces to zero
-    azzero(sys1.fx, sys1.natoms);
-    azzero(sys1.fy, sys1.natoms);
-    azzero(sys1.fz, sys1.natoms);
-    azzero(sys2.fx, sys2.natoms);
-    azzero(sys2.fy, sys2.natoms);
-    azzero(sys2.fz, sys2.natoms);
+    azzero(sys1.fx, sys1.nthreads*sys1.natoms);
+    azzero(sys1.fy, sys1.nthreads*sys1.natoms);
+    azzero(sys1.fz, sys1.nthreads*sys1.natoms);
+    azzero(sys2.fx, sys1.nthreads*sys2.natoms);
+    azzero(sys2.fy, sys1.nthreads*sys2.natoms);
+    azzero(sys2.fz, sys1.nthreads*sys2.natoms);
 
     // Call the force function
     force(&sys1);
@@ -73,9 +82,9 @@ TEST(ForceCalculation, ComputesForces) {
     ASSERT_DOUBLE_EQ(sys2.fz[1],0.0);
     
     // Check the computed forces against expected values
-    ASSERT_DOUBLE_EQ(sys1.fx[0],0.11659418934778376);
-    ASSERT_DOUBLE_EQ(sys2.fy[2],-0.036694101508916367);
-    ASSERT_DOUBLE_EQ(sys2.fz[0],-sys2.fz[2]);
+    ASSERT_NEAR(sys1.fx[0],0.11659418934778376,1.e-5);
+    ASSERT_NEAR(sys2.fy[2],-0.036694101508916367,1.e-5);
+    ASSERT_NEAR(sys2.fz[0],-sys2.fz[2],1.e-5);
 
 
 
