@@ -78,24 +78,7 @@ void force(mdsys_t *sys)
         for(int k=0; k < (sys->natoms)-1; k += sys->npes*sys->nthreads) {
             int ii = k + sys->rank + (sys->npes*tid);
             if (ii >= (sys->natoms - 1)) break;
-    // #ifdef _MPI 
-    // for(int k=0; k < (sys->natoms - 1); k += sys->npes) {
-    //         int ii = k + sys->rank;
-    //         if (ii >= (sys->natoms - 1)) break;
-        
-
-    //     #if defined(_OMP)
-    //     for (int i = kk; i < sys->natoms -1 ; i +=sys->nthreads)
-    //         {   int ii= i + tid;
-    //             if (ii >= (sys->natoms -1)) break;
-    //     #else 
-    //        int ii = kk;
-    //     #endif
-    // #else
-    //     for (int i = 0; i < sys->natoms - 1; i += sys->nthreads)
-    //         {   int ii= i + tid;
-    //             if (ii >= (sys->natoms -1)) break;
-    // #endif
+            
                     rx1=sys->rx[ii];
                     ry1=sys->ry[ii];
                     rz1=sys->rz[ii];
