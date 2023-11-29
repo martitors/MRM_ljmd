@@ -10,8 +10,7 @@
 
 void force(mdsys_t *sys)
 {
-    double epot; 
-    epot = 0.0 ;
+    double epot = 0.0 ;
 
     /* zero energy and forces */
     sys->epot=0.0;
@@ -75,21 +74,28 @@ void force(mdsys_t *sys)
         azzero(fz,sys->natoms);
 
         #endif
-    #ifdef _MPI 
-    for(int k=0; k < (sys->natoms - 1); k += sys->npes) {
-            int ii = k + sys->rank;
-            if (ii >= (sys->natoms - 1)) break;
 
-        #if defined(_OMP)
-        for (int i = 0; i < sys->natoms - 1; i += sys->nthreads)
-            {   int ii= i + tid;
-                if (ii >= (sys->natoms -1)) break;
-            #endif
-    #else
-        for (int i = 0; i < sys->natoms - 1; i += sys->nthreads)
-            {   int ii= i + tid;
-                if (ii >= (sys->natoms -1)) break;
-    #endif
+        for(int k=0; k < (sys->natoms)-1; k += sys->npes*sys->nthreads) {
+            int ii = k + sys->rank + (sys->npes*tid);
+            if (ii >= (sys->natoms - 1)) break;
+    // #ifdef _MPI 
+    // for(int k=0; k < (sys->natoms - 1); k += sys->npes) {
+    //         int ii = k + sys->rank;
+    //         if (ii >= (sys->natoms - 1)) break;
+        
+
+    //     #if defined(_OMP)
+    //     for (int i = kk; i < sys->natoms -1 ; i +=sys->nthreads)
+    //         {   int ii= i + tid;
+    //             if (ii >= (sys->natoms -1)) break;
+    //     #else 
+    //        int ii = kk;
+    //     #endif
+    // #else
+    //     for (int i = 0; i < sys->natoms - 1; i += sys->nthreads)
+    //         {   int ii= i + tid;
+    //             if (ii >= (sys->natoms -1)) break;
+    // #endif
                     rx1=sys->rx[ii];
                     ry1=sys->ry[ii];
                     rz1=sys->rz[ii];
@@ -152,13 +158,13 @@ void force(mdsys_t *sys)
 
 
     #ifdef _MPI
-    MPI_Reduce( sys->cx, sys->fx, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
-    MPI_Reduce( sys->cy, sys->fy, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
-    MPI_Reduce( sys->cz, sys->fz, sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( sys->cx, sys->fx, sys->nthreads*sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( sys->cy, sys->fy, sys->nthreads*sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
+    MPI_Reduce( sys->cz, sys->fz, sys->nthreads*sys->natoms, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
     MPI_Reduce( &epot, &sys->epot, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
-    #endif
+    #else
     sys->epot = epot;
-
+    #endif
 
 }
 

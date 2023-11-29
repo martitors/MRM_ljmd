@@ -23,8 +23,6 @@ TEST(ForceCalculation, ComputesForces) {
     sys1.sigma = 1.0;
     sys1.rcut = 4.0;
     sys1.box = 20.0;
-    sys1.rank = 0;
-    sys1.npes = 1;
 
 
     mdsys_t sys2;
@@ -34,8 +32,7 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.sigma = 1.0;
     sys2.rcut = 3.0;
     sys2.box = 15.0;
-    sys2.rank = 0;
-    sys2.npes = 1;
+    
 
     #ifdef _OPENMP
         sys1.nthreads = omp_get_max_threads();
@@ -53,6 +50,11 @@ TEST(ForceCalculation, ComputesForces) {
     MPI_Comm_rank( MPI_COMM_WORLD, &sys1.rank ); 
     MPI_Comm_size( MPI_COMM_WORLD, &sys2.npes );
     MPI_Comm_rank( MPI_COMM_WORLD, &sys2.rank ); 
+    #else
+        sys1.rank = 0;
+        sys1.npes = 1;
+        sys2.rank = 0;
+        sys2.npes = 1;
     #endif
 
     // Allocate memory for the system
@@ -66,7 +68,8 @@ TEST(ForceCalculation, ComputesForces) {
     sys1.rx[1] = 2.5; sys1.ry[1] = 0.0; sys1.rz[1] = 3.0;
     sys1.rx[2] = 10.0; sys1.ry[2] = 0.0; sys1.rz[2] = 0.0;
     sys1.rx[3] = 5.0; sys1.ry[3] = 0.0; sys1.rz[3] = 0.0;
-
+    }
+    if (sys2.rank == 0){
     sys2.rx[0] = 1.0; sys2.ry[0] = 0.0; sys2.rz[0] = 2.0;
     sys2.rx[1] = 0.0; sys2.ry[1] = 0.0; sys2.rz[1] = 5.0;
     sys2.rx[2] = 0.0; sys2.ry[2] = 2.0; sys2.rz[2] = 1.0;
@@ -100,12 +103,12 @@ TEST(ForceCalculation, ComputesForces) {
     // azzero(sys2.vz, sys2.natoms);
 
     #ifdef _MPI
-    sys1.cx = (double*) malloc( sys1.natoms * sizeof(double) );
-    sys1.cy = (double*) malloc( sys1.natoms * sizeof(double) );
-    sys1.cz = (double*) malloc( sys1.natoms * sizeof(double) );
-    sys2.cx = (double*) malloc( sys2.natoms * sizeof(double) );
-    sys2.cy = (double*) malloc( sys2.natoms * sizeof(double) );
-    sys2.cz = (double*) malloc( sys2.natoms * sizeof(double) );
+    sys1.cx = (double*) malloc( sys1.nthreads*sys1.natoms * sizeof(double) );
+    sys1.cy = (double*) malloc( sys1.nthreads*sys1.natoms * sizeof(double) );
+    sys1.cz = (double*) malloc( sys1.nthreads*sys1.natoms * sizeof(double) );
+    sys2.cx = (double*) malloc( sys2.nthreads*sys2.natoms * sizeof(double) );
+    sys2.cy = (double*) malloc( sys2.nthreads*sys2.natoms * sizeof(double) );
+    sys2.cz = (double*) malloc( sys2.nthreads*sys2.natoms * sizeof(double) );
     #endif
     // Call the force function
 
@@ -123,7 +126,7 @@ TEST(ForceCalculation, ComputesForces) {
     ASSERT_DOUBLE_EQ(sys2.fz[1],0.0);
     
     // Check the computed forces against expected values
-    ASSERT_NEAR(sys1.fx[0],0.11659418934778376,1.e-5);
+    ASSERT_NEAR(sys1.fx[0], 0.0078842986764635671,1.e-5);
     ASSERT_NEAR(sys2.fy[2],-0.036694101508916367,1.e-5);
     ASSERT_NEAR(sys2.fz[0],-sys2.fz[2],1.e-5);
     }

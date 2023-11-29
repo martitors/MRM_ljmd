@@ -4,7 +4,7 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 option(USE_OPENMP "Build with OPENMP support" ON)
 
-option( USE_MPI "Build with MPI support" ON )
+option( USE_MPI "Build with MPI support" OFF )
 
 if (USE_OPENMP)
 	find_package(OpenMP REQUIRED)
@@ -53,7 +53,7 @@ target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 
 ########################## test ###############################
-option(ENABLE_TESTING "Enable building unit tests" OFF)
+option(ENABLE_TESTING "Enable building unit tests" ON)
 if(ENABLE_TESTING)
 
   enable_testing()

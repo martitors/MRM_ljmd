@@ -46,6 +46,9 @@ int main(int argc, char **argv)
     mpirank = sys.rank;
 
     if (mpirank==0) printf("MPI correctly initialized\n");
+    #else
+    sys.npes=1;
+    sys.rank=0;
     #endif
 
     #ifdef _OPENMP
@@ -56,7 +59,8 @@ int main(int argc, char **argv)
 
     if (mpirank==0){
     printf("LJMD version %3.1f\n", LJMD_VERSION);
-
+    
+    printf("nthreads: %d", sys.nthreads);
     t_start = wallclock();
 
     read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
@@ -95,9 +99,9 @@ int main(int argc, char **argv)
                 fscanf(fp,"%lf%lf%lf",sys.vx+i, sys.vy+i, sys.vz+i);
             }
             fclose(fp);
-            azzero(sys.fx, sys.natoms);
-            azzero(sys.fy, sys.natoms);
-            azzero(sys.fz, sys.natoms);
+            azzero(sys.fx, sys.nthreads*sys.natoms);
+            azzero(sys.fy, sys.nthreads*sys.natoms);
+            azzero(sys.fz, sys.nthreads*sys.natoms);
         } else {
             perror("cannot read restart file");
             return 3;
