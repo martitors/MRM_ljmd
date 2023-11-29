@@ -4,7 +4,7 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 option(USE_OPENMP "Build with OPENMP support" ON)
 
-option( USE_MPI "Build with MPI support" OFF )
+option( USE_MPI "Build with MPI support" ON )
 
 if (USE_OPENMP)
 	find_package(OpenMP REQUIRED)

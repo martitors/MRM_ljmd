@@ -56,15 +56,12 @@ int main(int argc, char **argv)
     #else
         sys.nthreads =1;
     #endif
-    #ifdef _OPENMP
-       int num_of_threads = omp_get_num_threads();
-       printf("Number of omp threads: %d", num_of_threads);
-    #endif
+
 
     if (mpirank==0){
     printf("LJMD version %3.1f\n", LJMD_VERSION);
     
-    printf("nthreads: %d", sys.nthreads);
+    printf("\nnthreads: %d\n", sys.nthreads);
     t_start = wallclock();
 
     read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
