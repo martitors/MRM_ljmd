@@ -4,7 +4,7 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 option(USE_OPENMP "Build with OPENMP support" ON)
 
-option( USE_MPI "Build with MPI support" OFF )
+option( USE_MPI "Build with MPI support" ON )
 
 if (USE_OPENMP)
 	find_package(OpenMP REQUIRED)
@@ -23,7 +23,16 @@ if (USE_MPI)
 endif()
 
 ######################## library ##########################################
-add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
+add_library(mdlib SHARED 
+            src/utilities.c 
+            src/input.c 
+            src/output.c 
+            src/force_compute.c
+            src/cleanup.c 
+            src/verlet.c 
+            src/constants.c 
+            src/allocate.c 
+            src/mpi_funcs.c)
 target_compile_options(mdlib PRIVATE -O3 -ffast-math -fexpensive-optimizations -msse3)
 if (USE_OPENMP)
 	target_link_libraries(mdlib OpenMP::OpenMP_C)
@@ -48,7 +57,7 @@ if (USE_MPI)
     target_link_libraries(main PUBLIC MPI::MPI_CXX)
 endif()
 
-target_link_libraries(main PUBLIC mdlib m)
+target_link_libraries(main PRIVATE mdlib)
 target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 

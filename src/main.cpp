@@ -13,6 +13,7 @@
 #include "force_compute.h"
 #include "cleanup.h"
 #include "allocate.h"
+#include "mpi_funcs.h"
 
 #ifdef _MPI
 #include "mpi.h"
@@ -32,24 +33,7 @@ int main(int argc, char **argv)
     mdsys_t sys;
     double t_start;
 
-    #ifdef _MPI
-    
-    MPI_Init( &argc, &argv ); 
-
-    MPI_Comm_size( MPI_COMM_WORLD, &sys.npes );
-    MPI_Comm_rank( MPI_COMM_WORLD, &sys.rank );    
-
-    if (sys.rank==0) printf("MPI correctly initialized\n");
-    #else
-    sys.npes=1;
-    sys.rank=0;
-    #endif
-
-    #ifdef _OPENMP
-        sys.nthreads = omp_get_max_threads();
-    #else
-        sys.nthreads =1;
-    #endif
+    init_mpi_omp(argc,argv,&sys);
 
 
     if (sys.rank==0){
@@ -59,23 +43,9 @@ int main(int argc, char **argv)
     t_start = wallclock();
 
     read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
-
-
     }
 
-    #ifdef _MPI
-
-    MPI_Bcast(&sys.natoms, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&sys.epsilon, 1, MPI_DOUBLE, 0,MPI_COMM_WORLD);
-    MPI_Bcast(&sys.sigma, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&sys.rcut, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&sys.box, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&sys.nsteps, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    sys.cx = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
-    sys.cy = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
-    sys.cz = (double*) malloc( sys.nthreads * sys.natoms * sizeof(double) );
-    
-    #endif
+    mpi_bcasts(&sys);
 
     allocate(&sys);
 
@@ -146,12 +116,6 @@ int main(int argc, char **argv)
     printf("Simulation Done. Run time: %10.3fs\n", wallclock()-t_start);
     }
     cleanup(sys, erg, traj);
-    #ifdef _MPI
-    free( sys.cx ); 
-    free( sys.cy ); 
-    free( sys.cz ); 
-
-    MPI_Finalize();
-    #endif
+    mpi_fin(&sys);
     return 0;
 }
