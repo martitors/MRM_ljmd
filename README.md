@@ -4,6 +4,7 @@ This package contains refactored MD code for simulating atoms with a Lennard-Jon
 3. Shared memory multiprocessing with 
 OpenMP
 
+Benchmarks have been performed on Leonardo cluster.
 ## Collaborators
 
 ```
@@ -73,7 +74,16 @@ Below is a graph representation of the speedup and time of the serial optimisati
 
 ## Serial Optimisation + MPI
 
------TODO : Martina, add a brief explanation on what you did in mpi------
+When MPI is active, the workflow to calculate the force is divided among the different tasks. The master processor will read the input file and brodcast the necessary information to the other processors, including the number of atoms and the initial position of the particles. Each processor will calculate the force for a set particles and will collect the potential energy. At the end all the informations will be redirected to the master, which will also provide the print the output.
+
+Below we report the performance of the code following the steps of the previous case. The code has been tested on 1 up to 8 nodes.
+
+  - **108 atoms**: With 8 processors the code reaches the best performance. A further increasing of the number of processor will only make the parallel overhead more significant. 
+
+  - **2916 atoms**: The speedup of the code in this case saturates with 2 nodes.
+  
+  - **78732 atoms**: Up the 8 nodes, the code is keep scaling almost 
+
 
 ![Speedup MPI](/plots/MPI_bm_1.png)
 ![Time MPI](/plots/MPI_bm_2.png)
@@ -90,7 +100,14 @@ Below is a graph representation of the speedup and time of the serial optimisati
 
 ## Hybrid (Serial Optimisation + MPI + OpenMP)
 
+The code has been structured to allow the user to use both MPI and OpenMP simultaneously. In this way each slave processor will initialize a parallel region within which to subdivide the computation of the forces and potential energy of its own task.
+
+First we test this hybrid parallelization scheme on a single node: we measured the timings using different combination of MPI tasks and Threads, keeping their product equal to 32 (maximum number for a single node). As we can see in the first graph below, for systems with a larger number of particles there is no specific combination of MPI TASK and threads that leads to a better result. On the other hand, for the system with the smallest size this happens with 8 MPI tasks and 4 threads. With a further increasing of the number of threads, performance deteriorates considerably, suggesting an increasing of the parallelization overhead. Smaller size problems indeed can exacerbate issues like workload imbalance due to frequent synchronization points (barriers, reductions), and also sensitivity to cache contention with a system shared simultaneously by an higher number of threads.
+
 ![Speedup Hybrid,1 Node](/plots/Hybrid_bm_1.png)
+
+In the next plots we show the speedup and timing results performed on multiple nodes. The system with the lowest number of atoms does not seem to benefit from the increase in nodes as we expected. For the middle system, after 2 nodes the speedup does not increase significantly, instead for the bigger size system performance are linearly improving up to 8 nodes used.
+
 ![Speedup Hybrid,More Nodes](/plots/Hybrid_bm_2.png)
 ![Time Hybrid](/plots/Hybrid_bm_3.png)
 
