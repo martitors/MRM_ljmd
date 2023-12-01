@@ -117,9 +117,9 @@ Here we report the total speedup comparison between the different version of the
  
 |                 |       MPI       |      OPENMP      |                HYBRID                |
 |-----------------|-----------------|------------------|--------------------------------------|
-|     108 ATOMS   |       16        |        8         |  1 NODES, 8 MPI x 4 Threads per Node |
-|    2916 ATOMS   |       16        |        32        |  8 NODES, 8 MPI x 4 Threads per Node |
-|   78732 ATOMS   |       32        |        32        |  8 NODES, 8 MPI x 4 Threads per Node |
+|     108 ATOMS   |    16 procs     |    8 threads     |  1 NODES, 8 MPI x 4 Threads per Node |
+|    2916 ATOMS   |    16 procs     |    32 threads    |  8 NODES, 8 MPI x 4 Threads per Node |
+|   78732 ATOMS   |    32 procs     |    32 threads    |  8 NODES, 8 MPI x 4 Threads per Node |
 
 The advantages of using the hybrid approce increase with the size of the computed system and so reduce significantly the performance for smaller size systems. 
 On a single node, the performance obtained paralleling the code with MPI or with OPENMP are very similar between each other for the system we have studied.
