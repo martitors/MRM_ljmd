@@ -82,7 +82,7 @@ Below we report the performance of the code following the steps of the previous 
 
   - **2916 atoms**: The speedup of the code in this case saturates with 2 nodes.
   
-  - **78732 atoms**: Up the 8 nodes, the code is keep scaling almost 
+  - **78732 atoms**: Up the 8 nodes, the code is keep scaling almost perfectly.
 
 
 ![Speedup MPI](/plots/MPI_bm_1.png)
