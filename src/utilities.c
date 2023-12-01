@@ -74,3 +74,23 @@ void ekin(mdsys_t *sys)
     //#endif
     sys->temp = 2.0*sys->ekin/(3.0*sys->natoms-3.0)/kboltz;
 }
+
+
+static void update_cells(mdsys_t *sys)
+{
+        
+    if (sys->clist == NULL) {
+        
+        int nidx;
+        
+        int cell_per_dim = floor( sys->box / sys->rcut);
+        sys->cell_size  = sys->box/ cell_per_dim;
+        sys->ncells = cell_per_dim * cell_per_dim * cell_per_dim;
+        int boxoffs = 0.5 * ( sys->box - sys->cell_size );
+
+        sys->clist = (cell_t *) malloc(sys->ncells*sizeof(cell_t));
+        sys->plist = (int *) malloc(2*sys->ncells*sys->ncells*sizeof(int));
+
+    }
+
+}

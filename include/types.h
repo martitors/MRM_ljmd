@@ -6,6 +6,11 @@ extern "C" {
 	
     		/* structure to hold the complete information
    		 * about the MD system */
+			struct _cell {
+				int natoms;                      
+				int *cell_idx;   
+			};          
+			typedef struct _cell cell_t;
 
     		struct _mdsys {
         		int natoms,nfi,nsteps;
@@ -18,6 +23,12 @@ extern "C" {
 				int rank; 
 				int npes; 
 				double *cx, *cy, *cz; 
+
+				cell_t *clist;
+				int *plist;
+				int ncells,cell_size,cell_natoms;
+
+
     		};
     		typedef struct _mdsys mdsys_t;
 	#ifdef __cplusplus
