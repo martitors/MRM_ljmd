@@ -65,11 +65,30 @@ NB: Reference: The simplified code without any modifications  took 24.3 seconds 
    Time : 2.44 seconds  --> 9.8 times faster
 
 ```
-Below is a graph representation of the time and speedup of the serial optimisation features , run with 108,2916 and 78732 atoms.
+Below is a graph representation of the speedup and time of the serial optimisation features , run with 108,2916 and 78732 atoms.
 
 ![Speedup vs optimisation features](/plots/Serial_bm_1.png)
 ![Time vs optimisation features](/plots/Serial_bm_2.png)
 
+
+## MPI
+
+-----TODO : Martina, add a brief explanation on what you did in mpi------
+
+![Speedup vs optimisation features](/plots/MPI_bm_1.png)
+![Time vs optimisation features](/plots/MPI_bm_2.png)
+
+
+## OpenMP
+
+
+-----TODO : Mohammad, add a brief explanation on what you did in openmp------
+
+![Speedup vs optimisation features](/plots/OpenMP_bm_1.png)
+![Time vs optimisation features](/plots/OpenMP_bm_2.png)
+
+
+## Hybrid (Serial Optimaisation + MPI + OpenMP)
 
 
 
