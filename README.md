@@ -113,6 +113,18 @@ In the next plots we show the speedup and timing results performed on multiple n
 
 ## Total Speedup Comparison
 
+Here we report the total speedup comparison between the different version of the program, with different level of optimization and parallelization. For the MPI and OpenMP (on single node) and Hybrid version (on multiple nodes), we report the results of the configuration that leads to the best performance for each system size:
+ 
+|                 |       MPI       |      OPENMP      |                HYBRID                |
+|-----------------|-----------------|------------------|--------------------------------------|
+|     108 ATOMS   |       16        |        8         |  1 NODES, 8 MPI x 4 Threads per Node |
+|    2916 ATOMS   |       16        |        32        |  8 NODES, 8 MPI x 4 Threads per Node |
+|   78732 ATOMS   |       32        |        32        |  8 NODES, 8 MPI x 4 Threads per Node |
+
+The advantages of using the hybrid approce increase with the size of the computed system and so reduce significantly the performance for smaller size systems. 
+On a single node, the performance obtained paralleling the code with MPI or with OPENMP are very similar between each other for the system we have studied.
+
+
 ![Speedup total](/plots/Total.png)
 
 
