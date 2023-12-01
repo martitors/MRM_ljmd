@@ -15,14 +15,6 @@
 #include "allocate.h"
 #include "mpi_funcs.h"
 
-#ifdef _MPI
-#include "mpi.h"
-#endif //_MPI
-
-#ifdef _OPENMP
-#include <omp.h>
-#endif
-
 #define LJMD_VERSION 1.0
 
 int main(int argc, char **argv)
