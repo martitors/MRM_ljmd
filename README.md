@@ -68,9 +68,9 @@ NB: Reference: The simplified code without any modifications  took 24.3 seconds 
 Below is a graph representation of the time and speedup of the serial optimisation features , run with 108,2916 and 78732 atoms.
 
 
-<iframe width="100%" height="800" src="/plots/Serial_bm_1.pdf">
+<iframe width="100%" height="800" src="/plots/Serial_bm_1.pdf"> </iframe>
 
-<iframe width="100%" height="800" src="/plots/Serial_bm_2.pdf">
+<iframe width="100%" height="800" src="/plots/Serial_bm_2.pdf"></iframe>
 
 
 
