@@ -47,7 +47,7 @@ option(ENABLE_TESTING "Enable building unit tests" ON)
 
 ## Serial optimisation
  
-The program was refatored in the following steps which were performed **sequentially**:
+The program was refactored in the following steps which were performed **sequentially**:
 
 ```
 NB: Reference: The simplified code without any modifications  took 24.3 seconds for 108 atoms ,10000 steps
