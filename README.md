@@ -106,7 +106,7 @@ First we test this hybrid parallelization scheme on a single node: we measured t
 
 ![Speedup Hybrid,1 Node](/plots/Hybrid_bm_1.png)
 
-In the next plots we show the speedup and timing results performed on multiple nodes. The system with the lowest number of atoms does not seem to benefit from the increase in nodes as we expected. For the middle system, after 2 nodes the speedup does not increase significantly, instead for the bigger size system performance are linearly improving up to 8 nodes used.
+In the next plots we show the speedup and timing results performed on multiple nodes, keeping the same hybrid configuration (8 MPI TASK x 4 Threads) on the single nodes. The system with the lowest number of atoms does not seem to benefit from the increase in nodes as we expected. For the middle system, after 2 nodes the speedup does not increase significantly, instead for the bigger size system performance are linearly improving up to 8 nodes used.
 
 ![Speedup Hybrid,More Nodes](/plots/Hybrid_bm_2.png)
 ![Time Hybrid](/plots/Hybrid_bm_3.png)
