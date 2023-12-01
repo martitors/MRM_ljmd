@@ -71,7 +71,7 @@ Below is a graph representation of the speedup and time of the serial optimisati
 ![Time vs optimisation features](/plots/Serial_bm_2.png)
 
 
-## MPI
+## Serial Optimisation + MPI
 
 -----TODO : Martina, add a brief explanation on what you did in mpi------
 
@@ -79,7 +79,7 @@ Below is a graph representation of the speedup and time of the serial optimisati
 ![Time vs optimisation features](/plots/MPI_bm_2.png)
 
 
-## OpenMP
+## Serial Optimisation + OpenMP
 
 
 -----TODO : Mohammad, add a brief explanation on what you did in openmp------
@@ -88,7 +88,7 @@ Below is a graph representation of the speedup and time of the serial optimisati
 ![Time vs optimisation features](/plots/OpenMP_bm_2.png)
 
 
-## Hybrid (Serial Optimaisation + MPI + OpenMP)
+## Hybrid (Serial Optimisation + MPI + OpenMP)
 
 
 
