@@ -1,5 +1,4 @@
 import ctypes
-from ctypes import byref
 import sys
 
 ljmd_lib = ctypes.CDLL('./libmdlib.so') #,ctypes.RTLD_GLOBAL
@@ -35,10 +34,6 @@ class MDSys(ctypes.Structure):
         ("cz", ctypes.POINTER(ctypes.c_double)),
     ]
 
-def __init__(self):
-    self.nfi=0
-
-
 #prototypes for c functions
 ljmd_lib.init_mpi_omp.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p), ctypes.POINTER(MDSys)]
 ljmd_lib.init_mpi_omp.restype = None
@@ -62,9 +57,12 @@ ljmd_lib.mpi_bcasts.restype = None
 ljmd_lib.mpi_fin.argtypes = [ctypes.POINTER(MDSys)]
 ljmd_lib.mpi_fin.restype = None
 
-ljmd_lib.cleanup.argtypes = [MDSys, ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p)]
-ljmd_lib.cleanup.restype = None
+# ljmd_lib.cleanup.argtypes = [MDSys, ctypes.POINTER(ctypes.c_void_p), ctypes.POINTER(ctypes.c_void_p)]
+# ljmd_lib.cleanup.restype = None
 
+
+# ljmd_lib.read_input.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p,ctypes.c_char_p, ctypes.POINTER(MDSys), ctypes.POINTER(ctypes.c_int)]
+# ljmd_lib.read_input.restype = None
 def ekinetic(pysys):
     ljmd_lib.ekin(ctypes.byref(pysys))
 
@@ -83,14 +81,38 @@ def initialise_mpi_omp(argc, argv, pysys):
 def bcasts(pysys):
     ljmd_lib.mpi_bcasts(ctypes.byref(pysys))
 
-def clean(sys, erg, traj):
-    ljmd_lib.cleanup(sys, ctypes.byref(erg), ctypes.byref(traj))
+def close_files(sys, erg, traj):
+    #ljmd_lib.cleanup(sys, ctypes.byref(erg), ctypes.byref(traj))
+    erg.close()
+    traj.close()
 
 def mpi_finalise(pysys):
     ljmd_lib.mpi_fin(ctypes.byref(pysys))
 
-def read_file(line,restfile, trajfile, ergfile, pysys, nprint):
-    ljmd_lib.read_input(line,restfile, trajfile, ergfile,ctypes.byref(pysys),nprint)
+# def read_file(line,restfile, trajfile, ergfile, pysys, nprint):
+#     ljmd_lib.read_input(line,restfile, trajfile, ergfile,ctypes.byref(pysys),ctypes.byref(nprint))
+
+def get_a_line(ifile):
+    line = ifile.readline()
+    line = line.split('#')[0]
+    line = line.strip()
+    return line
+
+def read_input(input_file, pysys):
+    pysys.natoms = int(get_a_line(input_file))
+    pysys.mass = float(get_a_line(input_file))
+    pysys.epsilon = float(get_a_line(input_file))
+    pysys.sigma = float(get_a_line(input_file))
+    pysys.rcut = float(get_a_line(input_file))
+    pysys.box = float(get_a_line(input_file))
+    restfile = get_a_line(input_file)
+    trajfile = get_a_line(input_file)
+    ergfile = get_a_line(input_file)
+    pysys.nsteps = int(get_a_line(input_file))
+    pysys.dt = float(get_a_line(input_file))
+    nprint = int(get_a_line(input_file))
+
+    return restfile, trajfile, ergfile, nprint
 
 
 def allocate(pysys):

@@ -11,29 +11,26 @@ if __name__ == "__main__":
     
     # Create an instance of mdsys_t
     pysys = ft.MDSys()
-    print("ok1")
-    # Pass the arguments and mdsys_t instance by reference to the function
-    ft.initialise_mpi_omp(ctypes.c_int(len(arguments)), (ctypes.c_char_p * len(arguments))(*arguments), pysys)
-    print("ok2")
-    line=None 
-    restfile = None
-    trajfile = None
-    ergfile = None
-    nprint = None
-    start=None
+
+    # İnit mpi
+    ft.initialise_mpi_omp(ctypes.c_int(len(arguments)), (ctypes.c_char_p * len(arguments))(*arguments), pysys) 
+    start = 0.0
+    ergfile = "ergf"
+    trajfile = "trajf"
+    restfile = "restf"
+    nprint=0
 
     if pysys.rank == 0:
         version = 1.0
         print("LJMD version " + str(version) )
         start = timeit.default_timer()
-        ft.read_file(line,restfile, trajfile, ergfile, pysys, nprint)
-        print("ok3")
-    
-    ft.bcasts(pysys)
-    print("ok4")
-    ft.allocate(pysys)
-    print("ok5")
+        with  sys.stdin as input_file:
+                restfile, trajfile, ergfile, nprint = ft.read_input(input_file, pysys)
 
+
+    ft.bcasts(pysys)
+    ft.allocate(pysys)
+  
     if pysys.rank == 0:
         # Read restart
         restPath = f"../examples/{restfile}"
@@ -50,10 +47,11 @@ if __name__ == "__main__":
     
     pysys.nfi=0
     ft.force_compute(pysys)
+ 
 
     if pysys.rank == 0:
         ft.ekinetic(pysys)
-
+ 
         ergPath = f"../examples/{ergfile}"
         trajPath = f"../examples/{trajfile}"
 
@@ -65,16 +63,24 @@ if __name__ == "__main__":
             start = timeit.default_timer()
 
     for pysys.nfi in range(1, pysys.nsteps + 1): 
-        if pysys.nfi % nprint == 0 and pysys.rank == 0:
-             ft.output(pysys, erg, traj)
+        if  pysys.rank == 0 and pysys.nfi % nprint == 0:
+            ergPath = f"../examples/{ergfile}"
+            trajPath = f"../examples/{trajfile}"
+            with open(ergPath, "w") as erg, open(trajPath, "w") as traj:
+                 ft.output(pysys, erg, traj)
 
         ft.verlet_1(pysys)
         ft.force_compute(pysys)
         ft.verlet_2(pysys)
         ft.ekinetic(pysys)
+
     
     if pysys.rank == 0:
         print(f"Simulation Done. Run time:{timeit.default_timer() - start:10.3f}s")
     
-    ft.clean(pysys, erg, traj)
+    ergPath = f"../examples/{ergfile}"
+    trajPath = f"../examples/{trajfile}"
+    if pysys.rank == 0:
+        with open(ergPath, "w") as erg, open(trajPath, "w") as traj:
+             ft.close_files(pysys, erg, traj)
     ft.mpi_finalise(pysys)
