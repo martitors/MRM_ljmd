@@ -141,7 +141,21 @@ How to run the wrapper:
 - Copy ljmd.py and funcs_and_types.py into the build file
 - Move to the build folder and run the command: ```mpirun -np <num_of_processes> python ljmd.py < ../examples/argon_108.inp```
 
+# Cell list
+
+If the tag **USE CELL** is active, the code will performe the force computation using the cell list optimization. In the *cell.c* file all the functions needed are collected, including the building, the updating and the freeing of the total grid.
+The size of the cell has been chosen as 2 time the cutoff, but changing the ratio between this two is an easy and user-friendly operation (just changing the first value of the building function):
+```
+double cell_rcut_ratio = 2.0;
+```
+Each system has a *clist* and *plist* which respectivelly contains the list of the cells and the list of pairs of close cells. In the building function, we store the number of atoms inside each cells, the center coordinates of the cell and the global indexes of the atoms included.
+In the updating function, we restore the clist and insert each atoms in the cell which contains it.
+Finally, we compute the force splitting the global loop in two cases: first we compute the force between atoms which belong to the same cell, then using the pair list we compute the force between particles in different cells.
+Since for the input data available the time for updating the cells are considerably smaller than the total time, this operation has been performed at every step.
+
+As we can see in the plot below, the optimization due to the cell list confguration is evident when we are dealing with large systems of particles.
 
 
+![Cell_list](/plots/Cell.png)
 
 
