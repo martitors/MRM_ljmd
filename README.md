@@ -163,7 +163,7 @@ In the updating function, we restore the clist and insert each atoms in the cell
 Finally, we compute the force splitting the global loop in two cases: first we compute the force between atoms which belong to the same cell, then using the pair list we compute the force between particles in different cells.
 Since for the input data available the time for updating the cells are considerably smaller than the total time, this operation has been performed at every step.
 
-As we can see in the plot below, the optimization due to the cell list confguration is evident when we are dealing with large systems of particles.
+As we can see in the plot below, the optimization due to the cell list confguration is evident when we are dealing with large systems of particles(the blue line represents the classic approch while the green line is the one obtained using the cell list).
 
 
 ![Cell_list](/plots/Cell.png)
