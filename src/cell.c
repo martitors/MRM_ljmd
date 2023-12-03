@@ -5,7 +5,6 @@ void build_cells(mdsys_t *sys){
     /*ratio between cellsize and rcut*/
     
     double cell_rcut_ratio = 2.0;
-    double rsq;
 
     double cell_size = cell_rcut_ratio * sys->rcut;
 
@@ -34,12 +33,13 @@ void build_cells(mdsys_t *sys){
     int avg_density = sys->natoms / ncells;
 
     int idx;
-    double rx,ry,rz;
+    double rx,ry,rz,rsq;
     for (int z=0; z < cells_per_side; ++z) {
          for (int y=0; y < cells_per_side; ++y) {
              for (int x=0; x < cells_per_side; ++x) {
         
         idx = z * (cells_per_side * cells_per_side) + y * (cells_per_side) + x;
+        /*We allocate each cell of the clist with a size of ~ 3 times the average density*/
         sys->clist[idx].cell = (int *) malloc( (3 * avg_density + 2)* sizeof(int));
         sys->clist[idx].atoms = 0 ;
         sys->clist[idx].center_x = (x * sys->cell_size + sys->cell_size/2.0) - 0.5 * (sys->box -  sys->cell_size/2.0) ;
