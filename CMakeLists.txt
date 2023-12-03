@@ -4,7 +4,7 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 option(USE_OPENMP "Build with OPENMP support" OFF)
 
-option( USE_MPI "Build with MPI support" OFF )
+option( USE_MPI "Build with MPI support" ON)
 
 if (USE_OPENMP)
 	find_package(OpenMP REQUIRED)
@@ -17,8 +17,6 @@ if (USE_MPI)
     find_package(MPI REQUIRED)
     message( "building with MPI" )
     add_compile_definitions( _MPI=yes )
-    #include_directories( ${MPI_C_INCLUDE_PATH})
-    #include_directories( ${MPI_CXX_INCLUDE_PATH} )
 
 endif()
 
@@ -45,7 +43,7 @@ target_include_directories(mdlib PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 ##################### main #################################
 
-add_executable(main src/main.cpp)
+add_executable(main src/main.c)
 target_compile_options(main PUBLIC -O3 -ffast-math -fexpensive-optimizations -msse3)
 
 if (USE_OPENMP)
