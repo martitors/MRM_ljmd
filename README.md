@@ -168,7 +168,7 @@ As we can see in the plot below, the optimization due to the cell list confgurat
 
 ![Cell_list](/plots/Cell.png)
 
-#Morse potential
+# Morse potential
 
 Note that: this part is not merge in the "main" branch, you can find it in the "Morse" branch.
 
