@@ -66,6 +66,16 @@ NB: Reference: The simplified code without any modifications  took 24.3 seconds 
    Time : 2.44 seconds  --> 9.8 times faster
 
 ```
+The profiling results are as follows: 
+
+|                                          |       force       |      pbc     |
+|------------------------------------------|-------------------|--------------|
+|    Serial (without any modifications)    |    67.71%         |    24.45%    |  
+|    Add O3                                |    65.97%         |    28.47%    | 
+|    More comiler flags                    |    77.93%         |    22.07%    | 
+|    Newton's third law                    |    70.80%         |    29.11%    | 
+|    Avoid expensive math                  |    70.91%         |    29.09%    |
+
 Below is a graph representation of the speedup and time of the serial optimisation features , run with 108,2916 and 78732 atoms.
 
 ![Speedup vs optimisation features](/plots/Serial_bm_1.png)
