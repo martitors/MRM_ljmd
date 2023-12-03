@@ -176,25 +176,25 @@ The code implements two different types of interatomic potentials: Lennard-Jones
 
 for 108 atoms:
 
-threads   |          time
----------------------------
- 1        |          1.450
- 2        |          0.611
- 4        |          0.366
- 8        |          0.221
- 16       |          0.286
- 32       |          0.536
+|threads   |          time
+|----------|----------------
+| 1        |          1.450
+| 2        |          0.611
+| 4        |          0.366
+| 8        |          0.221
+| 16       |          0.286
+| 32       |          0.536
 
 for 2916 atoms:
 
-threads    |          time
-----------------------------
- 1         |          47.399
- 2         |          24.220
- 4         |          12.466
- 8         |          6.618
- 16        |          3.506
- 32        |          2.070
+|threads    |          time
+|-----------|----------------
+| 1         |          47.399
+| 2         |          24.220
+| 4         |          12.466
+| 8         |          6.618
+| 16        |          3.506
+| 32        |          2.070
 
 Similar to the behavior observed with the Lennard-Jones potential, the code achieves optimal performance with 8 threads when handling 108 atoms. Additionally, scalability remains linear for 2916 atoms.
 
