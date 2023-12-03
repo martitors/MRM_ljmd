@@ -127,9 +127,9 @@ On a single node, the performance obtained paralleling the code with MPI or with
 ![Speedup total](/plots/Total.png)
 
 
-##Extras
+## Extras
 
-#Python Wrapper
+# Python Wrapper
 
 A python wrapper (ljmd.py) for the main function has been created . All indidvidual functions are redefined in funcs_and_types.py which is then imported into ljmd.py. One more C source file was added ;mpi_funcs.c , which encapsulates functions in main that would be implemented only if MPI is on.
 NB: **The wrapper works in serial and MPI only. It has not been programmed to handle OpenMP**
