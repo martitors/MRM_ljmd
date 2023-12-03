@@ -80,32 +80,6 @@ TEST(ForceCalculation, ComputesForces) {
     sys2.rx[2] = 0.0; sys2.ry[2] = 2.0; sys2.rz[2] = 1.0;
     }
 
-    //initialise forces to zero
-
-    // azzero(sys1.fx, sys1.nthreads*sys1.natoms);
-    // azzero(sys1.fy, sys1.nthreads*sys1.natoms);
-    // azzero(sys1.fz, sys1.nthreads*sys1.natoms);
-    // azzero(sys2.fx, sys1.nthreads*sys2.natoms);
-    // azzero(sys2.fy, sys1.nthreads*sys2.natoms);
-    // azzero(sys2.fz, sys1.nthreads*sys2.natoms);
-    // Initialize velocities and forces
-
-    // }
-    // else{
-    // azzero(sys1.rx, sys1.natoms);
-    // azzero(sys1.ry, sys1.natoms);
-    // azzero(sys1.rz, sys1.natoms);
-    // azzero(sys2.rx, sys2.natoms);
-    // azzero(sys2.ry, sys2.natoms);
-    // azzero(sys2.rz, sys2.natoms);
-    // }
-
-    // azzero(sys1.vx, sys1.natoms);
-    // azzero(sys1.vy, sys1.natoms);
-    // azzero(sys1.vz, sys1.natoms);
-    // azzero(sys2.vx, sys2.natoms);
-    // azzero(sys2.vy, sys2.natoms);
-    // azzero(sys2.vz, sys2.natoms);
 
     #ifdef _MPI
     sys1.cx = (double*) malloc( sys1.nthreads*sys1.natoms * sizeof(double) );

@@ -17,12 +17,6 @@ void force(mdsys_t *sys)
 
     #ifdef _MPI
 
-    //if (sys->rank == 0){
-    //azzero( sys->fx, sys->nthreads*sys->natoms );
-    //azzero( sys->fy, sys->nthreads*sys->natoms );
-    //azzero( sys->fz, sys->nthreads*sys->natoms );
-    //}
-    
     MPI_Bcast( sys->rx, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
     MPI_Bcast( sys->ry, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
     MPI_Bcast( sys->rz, sys->natoms, MPI_DOUBLE, 0, MPI_COMM_WORLD );
