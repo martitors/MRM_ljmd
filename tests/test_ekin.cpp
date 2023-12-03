@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/force_compute.h"
-
+#include "force_compute.h"
 
 TEST(Kinetic_Energy, KE_2atoms) {
         mdsys_t sys;
