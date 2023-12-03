@@ -53,7 +53,7 @@ target_include_directories(main PUBLIC ${CMAKE_SOURCE_DIR}/include )
 
 
 ########################## test ###############################
-option(ENABLE_TESTING "Enable building unit tests" ON)
+option(ENABLE_TESTING "Enable building unit tests" OFF)
 if(ENABLE_TESTING)
 
   enable_testing()

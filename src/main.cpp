@@ -58,8 +58,7 @@ int main(int argc, char **argv)
     printf("\nnthreads: %d\n", sys.nthreads);
     t_start = wallclock();
 
-    read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
-
+    read_input(line, restfile, trajfile, ergfile, &sys, &nprint, sys.fflag);
 
     }
 

@@ -17,7 +17,8 @@ extern "C" {
 				int nthreads;
 				int rank; 
 				int npes; 
-				double *cx, *cy, *cz; 
+				double *cx, *cy, *cz;
+			int fflag;	
     		};
     		typedef struct _mdsys mdsys_t;
 	#ifdef __cplusplus

@@ -45,6 +45,9 @@ void force(mdsys_t *sys)
         double rcsq = sys->rcut * sys->rcut;
         double ffac,rsq;
         int j, fromidx ,toidx;
+	double r0 = sys->sigma*pow(2,1.0/6.0);
+	double alpha = 6.0/r0;
+	double coef = 2.0*sys->epsilon*alpha;
 
         #ifdef _OPENMP
             tid = omp_get_thread_num();
@@ -75,6 +78,7 @@ void force(mdsys_t *sys)
 
         #endif
 
+
         for(int k=0; k < (sys->natoms)-1; k += sys->npes*sys->nthreads) {
             int ii = k + sys->rank + (sys->npes*tid);
             if (ii >= (sys->natoms - 1)) break;
@@ -93,9 +97,22 @@ void force(mdsys_t *sys)
 
             /* compute force and energy if within cutoff */
             if (rsq < rcsq) {
-                double r6,rinv; rinv=1.0/rsq; r6=rinv*rinv*rinv;
-                ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
-                epot += r6*(c12*r6 - c6);
+      		
+		// consider using flag to switch between force and morse_force	
+		if(sys->fflag ==0 || !sys->fflag) {
+                	double r6,rinv; rinv=1.0/rsq; r6=rinv*rinv*rinv;
+                	ffac = (12.0*c12*r6 - 6.0*c6)*r6*rinv;
+                	epot += r6*(c12*r6 - c6);
+		} else if (sys->fflag == 1) {
+			double r = sqrt(rsq);
+			double dr = r - r0;
+			double dexp = exp(-alpha*dr);
+			ffac = coef*(dexp*dexp - dexp);
+			epot += 0.5*sys->epsilon*(dexp*dexp - 2*dexp);
+		} else {
+			printf("Error: Force flag not recognized. fflag=0 for LJ  and fflag=1 for Morse\n");
+			exit(1);
+		}
 
             #ifdef _MPI
 
