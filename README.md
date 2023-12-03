@@ -168,4 +168,33 @@ As we can see in the plot below, the optimization due to the cell list confgurat
 
 ![Cell_list](/plots/Cell.png)
 
+#Morse potential
+
+Note that: this part is not merge in the "main" branch, you can find it in the "Morse" branch.
+
+The code implements two different types of interatomic potentials: Lennard-Jones potential and Morse potential. The distinction between which potential to use is determined by a flag provided in the command-line argument. Indeed, when the flag is set to '0' in the command-line argument, the code executes calculations using the Lennard-Jones potential. On the other hand, when the flag is set to '1' in the command-line argument, the code switches to utilize the Morse potential. The implementation also involves OpenMP and MPI considerations. This approach provides flexibility and versatility to the code, enabling users to switch between different potential models (Lennard-Jones or Morse) based on the requirements of their simulations or calculations through a simple command-line flag selection. Moreover, the following is the scalability based on the OpenMP for Morse potential:
+
+for 108 atoms:
+
+threads   |          time
+---------------------------
+ 1        |          1.450
+ 2        |          0.611
+ 4        |          0.366
+ 8        |          0.221
+ 16       |          0.286
+ 32       |          0.536
+
+for 2916 atoms:
+
+threads    |          time
+----------------------------
+ 1         |          47.399
+ 2         |          24.220
+ 4         |          12.466
+ 8         |          6.618
+ 16        |          3.506
+ 32        |          2.070
+
+Similar to the behavior observed with the Lennard-Jones potential, the code achieves optimal performance with 8 threads when handling 108 atoms. Additionally, scalability remains linear for 2916 atoms.
 
