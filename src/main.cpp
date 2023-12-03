@@ -146,10 +146,10 @@ int main(int argc, char **argv)
             output(&sys, erg, traj);
 
         /* propagate system and recompute energies */
-        velverlet_1(&sys);
+         if(sys.rank == 0)velverlet_1(&sys);
         force(&sys);   
-        velverlet_2(&sys);
-        ekin(&sys);
+         if(sys.rank == 0)velverlet_2(&sys);
+         if(sys.rank == 0)ekin(&sys);
         #ifdef _CELL
         update_cells(&sys);
         #endif
