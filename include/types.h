@@ -7,9 +7,10 @@ extern "C" {
     		/* structure to hold the complete information
    		 * about the MD system */
 			struct _cell {
-				int natoms;                      
-				int *cell_idx;   
-			};          
+				int atoms;                     
+				int *cell;  
+				double center_x,center_y,center_z;
+			};        
 			typedef struct _cell cell_t;
 
     		struct _mdsys {
@@ -24,11 +25,10 @@ extern "C" {
 				int npes; 
 				double *cx, *cy, *cz; 
 
-				cell_t *clist;
+				cell_t *clist ;
 				int *plist;
-				int ncells,cell_size,cell_natoms;
-
-
+				double cell_size;
+				int ncells,npair,cells_per_side;
     		};
     		typedef struct _mdsys mdsys_t;
 	#ifdef __cplusplus

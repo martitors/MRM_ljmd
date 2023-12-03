@@ -7,7 +7,12 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+#ifdef _CELL
+#include "cell.h"
+#else
 #include "force_compute.h"
+#endif
 
 #ifdef _MPI
 #include "mpi.h"
@@ -112,6 +117,17 @@ TEST(ForceCalculation, ComputesForces) {
     #endif
     // Call the force function
 
+    #ifdef _CELL
+    sys1.clist = NULL;
+    sys1.plist = NULL;
+    sys2.clist = NULL;
+    sys2.plist = NULL;
+    build_cells(&sys1);
+    build_cells(&sys2);
+    update_cells(&sys1);
+    update_cells(&sys2);
+    #endif
+
     force(&sys1);
     force(&sys2);
 
@@ -160,5 +176,10 @@ TEST(ForceCalculation, ComputesForces) {
     free(sys2.cx);
     free(sys2.cy);
     free(sys2.cz);
+    #endif
+
+    #ifdef _CELL
+    free_cells(&sys1);
+    free_cells(&sys2);
     #endif
 }

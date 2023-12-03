@@ -10,7 +10,11 @@
 #include "verlet.h"
 #include "output.h"
 #include "input.h"
+#ifdef _CELL
+#include "cell.h"
+#else
 #include "force_compute.h"
+#endif
 #include "cleanup.h"
 #include "allocate.h"
 
@@ -102,11 +106,20 @@ int main(int argc, char **argv)
     }
     /* initialize forces and energies.*/
     sys.nfi=0;
+    #ifdef _CELL
+    sys.clist = NULL;
+    sys.plist = NULL;
+    build_cells(&sys);
+    update_cells(&sys);
+    #endif
     force(&sys);
 
     if(sys.rank == 0){
         ekin(&sys);
 
+        #ifdef _CELL
+        update_cells(&sys);
+        #endif
         char ergPath[256]; // Adjust the size based on your needs
         snprintf(ergPath, sizeof(ergPath), "../examples/%s", ergfile);
 
@@ -128,7 +141,6 @@ int main(int argc, char **argv)
     /**************************************************/
     /* main MD loop */
     for(sys.nfi=1; sys.nfi <= sys.nsteps; ++sys.nfi) {
-
         /* write output, if requested */
         if ((sys.nfi % nprint) == 0 && sys.rank == 0)
             output(&sys, erg, traj);
@@ -138,12 +150,18 @@ int main(int argc, char **argv)
         force(&sys);   
         velverlet_2(&sys);
         ekin(&sys);
+        #ifdef _CELL
+        update_cells(&sys);
+        #endif
         }
     /**************************************************/
     if(sys.rank == 0){
     /* clean up: close files, free memory */
 
     printf("Simulation Done. Run time: %10.3fs\n", wallclock()-t_start);
+    #ifdef _CELL
+    free_cells(&sys);
+    #endif
     }
     cleanup(sys, erg, traj);
     #ifdef _MPI

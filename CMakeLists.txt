@@ -4,7 +4,8 @@ project(LJMD VERSION 1.0 LANGUAGES C CXX)
 
 # Define build options for OpenMP and MPI support
 option(USE_OPENMP "Build with OPENMP support" ON)
-option( USE_MPI "Build with MPI support" OFF )
+option( USE_MPI "Build with MPI support" ON )
+option( USE_CELL "Build with cell list support" OFF )
 
 # Find and configure OpenMP if enabled
 if (USE_OPENMP)
@@ -22,8 +23,21 @@ if (USE_MPI)
 
 endif()
 
+if (USE_CELL) 
+    message( "building with cell list" )
+    add_compile_definitions( _CELL=yes )
+    if (USE_MPI OR USE_OPENMP) 
+      message(FATAL_ERROR "Error: Cell list works only with MPI and OpenMP off.")
+    endif()
+endif()
+
 ######################## library configuration ##########################################
+if (USE_CELL) 
+add_library(mdlib src/utilities.c src/input.c src/output.c src/cell.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
+
+else()
 add_library(mdlib src/utilities.c src/input.c src/output.c src/force_compute.c src/cleanup.c src/verlet.c src/constants.c src/allocate.c)
+endif()
 target_compile_options(mdlib PRIVATE -O3 -ffast-math -fexpensive-optimizations -msse3)
 if (USE_OPENMP)
 	target_link_libraries(mdlib OpenMP::OpenMP_C)
