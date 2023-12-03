@@ -32,6 +32,9 @@ int main(int argc, char **argv)
     mdsys_t sys;
     double t_start;
 
+    if (argv[1] != 0) sys.fflag = atoi(argv[1]);
+    else { printf("Error: Enter a force flag\n Usage: ./executable fflag(0=LJ and 1=Morse) < input_file\n"); exit(1);}
+
     #ifdef _MPI
     
     MPI_Init( &argc, &argv ); 
@@ -58,7 +61,7 @@ int main(int argc, char **argv)
     printf("\nnthreads: %d\n", sys.nthreads);
     t_start = wallclock();
 
-    read_input(line, restfile, trajfile, ergfile, &sys, &nprint, sys.fflag);
+    read_input(line, restfile, trajfile, ergfile, &sys, &nprint);
 
     }
 

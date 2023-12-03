@@ -1,6 +1,6 @@
 #include "../include/input.h"
 
-void read_input(char *line, char *restfile, char *trajfile, char *ergfile, mdsys_t *sys, int *nprint, int fflag)
+void read_input(char *line, char *restfile, char *trajfile, char *ergfile, mdsys_t *sys, int *nprint)
 {
     if (get_a_line(stdin, line))
         exit(1);
@@ -44,8 +44,4 @@ void read_input(char *line, char *restfile, char *trajfile, char *ergfile, mdsys
     if (get_a_line(stdin, line))
         exit(1);
     *nprint = atoi(line);
-
-    if (get_a_line(stdin, line))
-	exit(1);
-    sys->fflag = atoi(line);
 }

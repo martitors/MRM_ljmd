@@ -109,10 +109,10 @@ void force(mdsys_t *sys)
 			double dexp = exp(-alpha*dr);
 			ffac = coef*(dexp*dexp - dexp);
 			epot += 0.5*sys->epsilon*(dexp*dexp - 2*dexp);
-		} else {
-			printf("Error: Force flag not recognized. fflag=0 for LJ  and fflag=1 for Morse\n");
-			exit(1);
-		}
+		} //else {
+		//	printf("Error: Force flag not recognized. fflag=0 for LJ  and fflag=1 for Morse\n");
+		//	exit(1);
+		//}
 
             #ifdef _MPI
 
