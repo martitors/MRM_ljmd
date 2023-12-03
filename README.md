@@ -91,8 +91,7 @@ Below we report the performance of the code following the steps of the previous 
 
 ## Serial Optimisation + OpenMP
 
-
------TODO : Mohammad, add a brief explanation on what you did in openmp------
+Within our computational framework, we use parallel computation to calculate force interactions within a particle set and collect the corresponding potential energy (see the force function inside force_compute file). To do so, using OpenMP's reduction clause can be really useful, especially in scenarios where you need to perform computations across multiple threads and aggregate the results into a single (scalar) value, like calculating potential energy here. But, for force array, we cannot use reduction clause because reduction on arrays is just supported for system with OpenMP version 4.5 and higher. So, to ensure compatibility not only with various OpenMP versions but also with MPI, we divide atoms among different threads and implement a piece of code to use threads to parallelize the reductions. Moreover, see the following plots for scalability. 
 
 ![Speedup OpenMP](/plots/OpenMP_bm_1.png)
 ![Time OpenMP](/plots/OpenMP_bm_2.png)
